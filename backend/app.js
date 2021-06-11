@@ -41,15 +41,15 @@ let signin = require("./routes/signin");
 let register = require("./routes/register");
 let verify = require("./routes/verify");
 let payment = require("./routes/razorpay");
-let client_appointment = require("./routes/appointment");
+let client_appointment = require("./routes/client_appointment");
 
 
 app.use("/signin", signin);
 app.use('/register', register);
 app.use('/register/verify', verify); // @TEMP: verify can be generic
 app.use("/razorpay", payment);
-app.use("/appointment/client", client_appointment);
-app.use("/appointment/doctor", doctor_appointment); //@TODO
+// app.use("/appointment/client", client_appointment);
+// app.use("/appointment/doctor", doctor_appointment); //@TODO
 
 
 app.route("/test/verify")

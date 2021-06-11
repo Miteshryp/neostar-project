@@ -15,8 +15,6 @@ import {useHistory} from "react-router-dom";
 function SignInPage(props) {
    let redirect = useHistory();
 
-
-   console.log(props.location.state);
    const checkProps = async function() {
       if(props.location.state) { // signin info was passed.
          // check if the info passed is correct

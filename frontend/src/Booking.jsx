@@ -114,9 +114,6 @@ export default function BookingPage(props) {
 
 
 
-				<AppointmentCard >
-
-				</AppointmentCard>
 
 
 

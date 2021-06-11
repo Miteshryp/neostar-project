@@ -7,23 +7,18 @@ module.exports = {
 
 
 
-
-
       signinFail: {
          code: 404,
-         description: "Signin Failed: Record not found." 
+         description: "Signin Failed: Email not registered." 
+      },
+      siginInvalidCreds: {
+         code: 405,
+         description: "Signin Failed. Credentials are Invalid"
       },
       signinSuccess: {
          code: 401, 
          description: "Signin Successful."
       },
-
-
-
-      // registrationSuccess: {
-      //    code: 601,
-      //    description: "Registration Completed."
-      // },
 
 
 

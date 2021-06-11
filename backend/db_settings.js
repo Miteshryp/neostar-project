@@ -37,9 +37,26 @@ module.exports = {
             required: true
          },
 
-         date: {
+         doctorID: {
+            type: mongoose.Schema.Types.ObjectId,
+         },
+
+         issueDate: {
             type: Date, 
             required: true
+         },
+
+         appointmentDate: {
+            type: Date
+         },
+
+         confirmed: {
+            type: Boolean,
+            required: true
+         },
+
+         description: {
+            type: String
          }
       }
    }
