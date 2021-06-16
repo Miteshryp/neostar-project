@@ -1,9 +1,10 @@
-import axios from "axios";
+// import axios from "axios";
 import React from "react";
 import Form from "../components/Form";
 import FormField from "../components/FormField";
 import TextField from "../components/TextField";
-import backend from "../utils/backend_setting";
+// import backend from "../utils/backend_setting";
+import axios from "../utils/backend_setting"
 import { useHistory } from "react-router-dom";
 import FormButton from "../components/FormButton";
 
@@ -36,7 +37,7 @@ export default function VerifyPage(props) {
     };
 
     console.log("Sending Response");
-    let res = await axios.post(backend.url_path + backend.verification, verify_post);
+    let res = await axios.post('/register/verify', verify_post);
     console.log("Response Received");
     if (res.status === 200) {
       // The backend responded

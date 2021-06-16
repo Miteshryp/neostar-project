@@ -21,6 +21,14 @@ module.exports = {
       },
 
 
+      validRegistration: {
+         code: 301,
+         description: "The Fields are valid for registration"
+      },
+      invalidRegistration: {
+         code: 304,
+         description: "The Fields are invalid for registration"
+      },
 
 
       sentCodeSucess : {
@@ -31,13 +39,23 @@ module.exports = {
          code: 504, 
          description:  "Could not send the OTP."
       },
+      otpExpired: {
+         code: 508,
+         description: "OTP was already verified."
+      },
+
+
+
 
       duplicateEntry: {
          code: 612,
          description: "Entry Already Registered"
       },
 
-
+      invalidVerification: {
+         code: 603,
+         description: "The Parameters passed in are corrupted."  
+      },
 
       verificationFail: {
          code: 604,
@@ -47,10 +65,6 @@ module.exports = {
          code: 606,
          description: "OTP Verified successfully"
       },
-      otpExpired: {
-         code: 608,
-         description: "OTP was already verified."
-      }
    },
 
 

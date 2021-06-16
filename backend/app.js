@@ -1,14 +1,18 @@
 // Required Libraries
 const express = require("express");
 const app = express();
-const BP = require("body-parser");
 const cors = require("cors");
 const twilio = require("twilio");
 
 
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+
+
 // @@@ IMPORTANT @@@ //
 // @TODO: Twilio is gonna be a HUUUUGGEE problem. shift to MessageBird.
-
+// UPDATE: For now, maybe not :)
 
 
 // API's
@@ -17,7 +21,11 @@ const DB = require("./database");
 
 // This is a temporary AUTH process made with a dummy account
 // @TODO: Apply the real email AUTH tokens here 
-const TWILIO = require("./twilio_creds.js");
+const TWILIO = {
+   ID: process.env.TWILIO_ID,
+   AUTH: process.env.TWILIO_AUTH,
+   SERVICE_ID: process.env.TWILIO_SERVICE_ID
+}
 
 
 // Port settings currently made for localhost environment;
@@ -34,6 +42,18 @@ app.use(express.static("public"));
 app.use(express.urlencoded( {extended: true} ));
 app.use(express.json());
 
+
+// Cookies and Sessions
+app.use(session({
+   secret: process.env.COOKIE_SECRET,
+   resave: false,
+   saveUninitialized: false,
+   // cookie: {secure: true} // This is for HTTPS sites.
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+// @TODO: Complete the sessions system.
 
 // Routes
 
