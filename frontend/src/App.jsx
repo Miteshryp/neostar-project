@@ -1,13 +1,15 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavbarTop from "./components/Navbar";
+
 import RegisterPage from "./pages/Register";
 import SignInPage from "./pages/Signin";
 import AboutPage from "./pages/About";
 import HomePage from "./pages/Home";
 import VerifyPage from "./pages/Verify";
 import BookingPage from "./pages/Booking";
+
+import "./App.scss";
 
 function App() {
   return (
