@@ -1,15 +1,29 @@
-const mongoose = require("mongoose");
-const DB_CREDS = require("./db_creds.js")
+const dotenv = require("dotenv").config();
+if(dotenv.error) {
+   logger.error("DotENV failed to initialise");
+   logger.warn(dotenv.error)
+}
 
+
+const mongoose = require("mongoose");
+
+const DB_CREDS = {
+   DB_NAME: process.env.DB_NAME,
+   URL: process.env.DB_URL, 
+   DEBUG: process.env.DB_DEBUG
+}
+
+const logger = require("node-color-log");
 
 const m_models = {};
-
 
 
 class DBModel {
    constructor(options){
       this.name = options.name;
+
       this.schema = new mongoose.Schema(options.schema);
+      // this.schema.plugin(encrypt, {secret: process.env.DB_ENCRYPTION_SECRET, encryptedFields: encrypted_field});
 
       this.model = mongoose.model(this.name, this.schema);
 
@@ -24,7 +38,10 @@ class DBModel {
 
    changeParams(options) {
       this.name = options.name;
+      
       this.schema = new mongoose.Schema(options.schema);
+      // this.schema.plugin(encrypt, {secret: process.env.DB_ENCRYPTION_SECRET, encryptedFields: encrypted_field});
+
       this.model = mongoose.model(this.name, this.schema);
 
       // Setting the error handlers in the options
@@ -44,11 +61,13 @@ class DBModel {
 
    async find(query) {
       let entry = null;
+
       await this.model.find(query, async (err, results) => {
          if(this.search_err(err)) {
             entry = results[0];
          }
       });
+
       return entry;
    }
 
@@ -116,7 +135,7 @@ exports.initDB = async function() {
 const getDBURL = function() {
    if(DB_CREDS.DEBUG !== undefined) {
       // localhost database link
-      return DB_CREDS.URL + DB_CREDS.DB;
+      return DB_CREDS.URL + DB_CREDS.DB_NAME;
    }
    
    // return the acutal database link
@@ -126,7 +145,27 @@ const getDBURL = function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // // // // // // // //
+//
 // Default Error Handlers
+//
+// // // // // // // // //
 
 
 const initiation_err = (err) => {

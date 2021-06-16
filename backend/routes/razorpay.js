@@ -1,13 +1,17 @@
 const express = require("express");
+const logger = require("node-color-log");
 const Razorpay = require("razorpay");
 const shortid = require("shortid");
 
-const creds = require("./../appointment_creds");
+const creds = {
+   key_id: process.env.RAZORPAY_KEY_ID,
+   key_secret: process.env.RAZORPAY_KEY_SECRET
+}
 
 
 let router = express.Router();
 
-const razorpay = new Razorpay(creds.credentials);
+const razorpay = new Razorpay(creds);
 
 router.route("/")
       .post( async (req, res) => {
@@ -24,15 +28,17 @@ router.route("/")
       
          try {
             const response = await razorpay.orders.create(options);
-            console.log(response)
+            logger.debug("\n\nRazorpay: ")
+            logger.debug(response + "\n\n");
+
             res.json({
                id: response.id,
                currency: response.currency,
                amount: response.amount
             })
          } catch (error) {
-            console.error("ERROR: ");
-            console.log(error)
+            logger.error("ERROR: ");
+            logger.error(error)
          }
 
 

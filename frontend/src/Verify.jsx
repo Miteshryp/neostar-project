@@ -41,6 +41,7 @@ export default function VerifyPage(props) {
       console.log("Response Received");
       if(res.status === 200) {
          // The backend responded
+            console.log(res);
             if(res.data.status.code === 606) { //verification success
                makeErrorHidden();
                console.log("Verification successful");
