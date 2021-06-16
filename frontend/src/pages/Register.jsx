@@ -75,9 +75,7 @@ function RegisterPage() {
               <Form.Label>Address</Form.Label>
               <Form.Control required as="textarea" type="text" placeholder="Enter your address" name="address" onChange={(e) => changeInput(e)} />
             </Form.Group>
-            <p className="text-danger" style={errorStyle}>
-              Email / Phone already registered in an account.
-            </p>
+            <p className="text-danger">Email / Phone already registered in an account.</p>
             <Button variant="primary" size={"md"} type="submit">
               Submit
             </Button>
