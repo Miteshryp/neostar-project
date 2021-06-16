@@ -1,29 +1,30 @@
 import React from "react";
-import {BrowserRouter as Browser, Switch, Route, Link} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import NavbarTop from "./components/Navbar";
 
-import RegisterPage from "./Register";
-import SignInPage from "./Signin";
-import AboutPage from "./About"
-import HomePage from "./Home"
-import VerifyPage from "./Verify"
-import BookingPage from "./Booking";
+import RegisterPage from "./pages/Register";
+import SignInPage from "./pages/Signin";
+import AboutPage from "./pages/About";
+import HomePage from "./pages/Home";
+import VerifyPage from "./pages/Verify";
+import BookingPage from "./pages/Booking";
+
+import "./App.scss";
 
 function App() {
-
   return (
     <div className="App">
-      <Browser>
+      <Router>
+        <NavbarTop />
         <Switch>
-
           <Route path="/signin" component={SignInPage} />
           <Route path="/register" component={RegisterPage} />
           <Route path="/verify" component={VerifyPage} />
           <Route path="/about" component={AboutPage} />
           <Route path="/booking" component={BookingPage} />
           <Route path="/" component={HomePage} />
-
         </Switch>
-      </Browser>
+      </Router>
     </div>
   );
 }

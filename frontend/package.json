@@ -7,6 +7,10 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
+<<<<<<< HEAD
+=======
+    "bootstrap": "^4.6.0",
+>>>>>>> 250422a484557361883c5fc547981397c5e52286
     "node-sass": "^6.0.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
