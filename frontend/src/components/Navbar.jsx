@@ -5,7 +5,7 @@ function NavbarTop() {
   return (
     <Navbar bg="light" expand="lg">
       <Navbar.Brand href="/">
-        <Image src={logo} />
+        <Image src={logo} fluid style={{width: "8rem"}} />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">

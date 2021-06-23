@@ -8,7 +8,7 @@ function SignInPage() {
   let redirect = useHistory();
 
   let [signIn, setSignIn] = React.useState({
-    email: "",
+    username: "",
     password: "",
   });
   const changeInput = (event) => {
@@ -54,7 +54,7 @@ function SignInPage() {
             // Book an appointment.
 
             console.log("DATA IS NOW:");
-            redirect.push("/booking", res.data.data);
+            redirect.push("/dashboard", res.data.data);
           } else if (res.data.status.code === 404) {
             // signin failed: record not found
             console.error("ERROR: Invalid Credentials");
@@ -79,7 +79,7 @@ function SignInPage() {
           <Form className="py-3" onSubmit={onSubmit}>
             <Form.Group>
               <Form.Label>Email address</Form.Label>
-              <Form.Control required type="email" placeholder="Enter email" name="email" onChange={(e) => changeInput(e)} />
+              <Form.Control required type="email" placeholder="Enter email" name="username" onChange={(e) => changeInput(e)} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Password</Form.Label>

@@ -1,12 +1,9 @@
 // import axios from "axios";
 import React from "react";
-import Form from "../components/Form";
-import FormField from "../components/FormField";
-import TextField from "../components/TextField";
 // import backend from "../utils/backend_setting";
 import axios from "../utils/backend_setting"
 import { useHistory } from "react-router-dom";
-import FormButton from "../components/FormButton";
+import { Form, Container, Button, Row, Col } from "react-bootstrap";
 
 export default function VerifyPage(props) {
   let redirect = useHistory();
@@ -28,7 +25,7 @@ export default function VerifyPage(props) {
   let makeErrorVisible = () => setErrorVisible({ visibility: "visible" });
   let makeErrorHidden = () => setErrorVisible({ visibility: "hidden" });
 
-  async function OnSubmit(event) {
+  async function onSubmit(event) {
     event.preventDefault();
 
     let verify_post = {
@@ -59,13 +56,31 @@ export default function VerifyPage(props) {
   }
 
   return (
-    <div>
-      <Form title="Verification" onSubmit={OnSubmit}>
-        <TextField className="text-success" value={`The OTP was send to  ${register_data.phone}.`} />
-        <FormField fieldName="OTP" id="code" autoComplete="off" type="text" placeholder="Enter the OTP sent" value={displayCode} onChange={changeCode} />
-        <TextField className="text-danger" style={errorVisible} value="OTP could not be verified." />
-        <FormButton value="Verify" />
-      </Form>
-    </div>
+    // <div>
+    //   <Form title="Verification" onSubmit={OnSubmit}>
+    //     <TextField className="text-success" value={`The OTP was send to  ${register_data.phone}.`} />
+    //     <FormField fieldName="OTP" id="code" autoComplete="off" type="text" placeholder="Enter the OTP sent" value={displayCode} onChange={changeCode} />
+    //     <TextField className="text-danger" style={errorVisible} value="OTP could not be verified." />
+    //     <FormButton value="Verify" />
+    //   </Form>
+    // </div>
+    <Container fluid className="register-container">
+    <Row className="register-row">
+      <Col md={6}>
+        <h1>Verification</h1>
+        <Form className="py-3" onSubmit={onSubmit}>
+        <Form.Group>
+
+            <Form.Label>OTP</Form.Label>
+            <Form.Control required type="name" placeholder="Enter OTP" name="OTP" onChange={(e) => changeCode(e)} />
+          </Form.Group>
+          <p className="text-danger" style={errorVisible}>OTP could not be verified</p>
+          <Button variant="primary" size={"md"} type="submit">
+            Submit
+          </Button>
+        </Form>
+      </Col>
+    </Row>
+  </Container>
   );
 }
