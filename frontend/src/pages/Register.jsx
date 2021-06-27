@@ -7,7 +7,7 @@ import { Link, useHistory } from "react-router-dom";
 function RegisterPage() {
   let redirect = useHistory();
 
-  let [input, setInput] = useState({ name: "", phone: "", email: "", password: "", address: "" });
+  let [input, setInput] = useState({ name: "", phone: "", username: "", password: "", address: "" });
   let [errorStyle, setErrorStyle] = useState({ display: "none" });
 
   const makeErrorVisible = () => setErrorStyle({ display: "block" });
@@ -57,7 +57,7 @@ function RegisterPage() {
           <Form className="py-3" onSubmit={onSubmit}>
             <Form.Group>
               <Form.Label>Email address</Form.Label>
-              <Form.Control required type="email" placeholder="Enter email" name="email" onChange={(e) => changeInput(e)} />
+              <Form.Control required type="email" placeholder="Enter email" name="username" onChange={(e) => changeInput(e)} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Password</Form.Label>

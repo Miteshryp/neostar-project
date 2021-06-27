@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import axios from "../utils/backend_setting";
 import { Form, Container, Button, Row, Col } from "react-bootstrap";
@@ -20,6 +20,23 @@ function SignInPage() {
     });
   };
 
+  
+  useEffect( () => {
+    const checkUser = async () => {
+      await axios.get("/signin").then((res) => {
+        if(res.status === 200) {
+          // response received.
+          if(res.data.status.code === 401) {
+            // signin successful
+            redirect.push("/dashboard", res.data.data);
+          }
+        }
+      });
+    }
+    checkUser();
+  })
+
+
   let [errorStyle, setErrorStyle] = useState({ display: "none" });
 
   const makeErrorVisible = () => setErrorStyle({ display: "block" });
@@ -34,6 +51,9 @@ function SignInPage() {
     // Check with the database if the account exists
     // let res = await axios.post(backend.url_path + backend.signin, signIn);
     await axios.post("/signin", signIn).then((res) => {
+      console.log("RES - ");
+      console.log(res);
+
       if (res.status === 200) {
         //response received.
         console.log("RECEIVED: ");
@@ -54,6 +74,7 @@ function SignInPage() {
             // Book an appointment.
 
             console.log("DATA IS NOW:");
+            console.log(res.data.data)
             redirect.push("/dashboard", res.data.data);
           } else if (res.data.status.code === 404) {
             // signin failed: record not found

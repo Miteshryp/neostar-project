@@ -2,34 +2,22 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const twilio = require("twilio");
 
+const options = require("./db_settings")
 
 const session = require("express-session");
-const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
+const passport = require("./passport");
+const logger = require("node-color-log");
 
-
-// @@@ IMPORTANT @@@ //
-// @TODO: Twilio is gonna be a HUUUUGGEE problem. shift to MessageBird.
-// UPDATE: For now, maybe not :)
-
-
-// API's
 const DB = require("./database");
 
-
-// This is a temporary AUTH process made with a dummy account
-// @TODO: Apply the real email AUTH tokens here 
-const TWILIO = {
-   ID: process.env.TWILIO_ID,
-   AUTH: process.env.TWILIO_AUTH,
-   SERVICE_ID: process.env.TWILIO_SERVICE_ID
-}
+//
+// ------------------------------------- END OF IMPORTS --------------------------------------
+//
 
 
-// Port settings currently made for localhost environment;
-// @TODO: Set the url and port settings to be suitable cloud host. 
+
+
 const DEFAULT_PORT = 5000;
 let port = null;
 
@@ -37,66 +25,57 @@ let port = null;
 if(process.env.PORT !== undefined && process.env.port !== null) port = process.env.PORT;
 else port = DEFAULT_PORT;
 
-app.use(cors());
+
+app.use(cors( {
+   origin: "http://localhost:3000",
+   credentials: true
+   }
+));
 app.use(express.static("public"));
-app.use(express.urlencoded( {extended: true} ));
+app.use(express.urlencoded( {extended: false} ));
 app.use(express.json());
 
 
 // Cookies and Sessions
 app.use(session({
    secret: process.env.COOKIE_SECRET,
-   resave: false,
    saveUninitialized: false,
+   resave: false
    // cookie: {secure: true} // This is for HTTPS sites.
 }))
 
 app.use(passport.initialize());
 app.use(passport.session());
-// @TODO: Complete the sessions system.
+
+logger.debug("Passport Initiated");
+
+//
+// ------------------------------------- END OF SETUP --------------------------------------------
+//
+
+
+
+
+
 
 // Routes
+const signin = require("./routes/signin");
+const register = require("./routes/register");
+const verify = require("./routes/verify");
+const payment = require("./routes/payment");
 
-let signin = require("./routes/signin");
-let register = require("./routes/register");
-let verify = require("./routes/verify");
-let payment = require("./routes/razorpay");
-let client_appointment = require("./routes/client_appointment");
 
 
 app.use("/signin", signin);
 app.use('/register', register);
 app.use('/register/verify', verify); // @TEMP: verify can be generic
-app.use("/razorpay", payment);
-// app.use("/appointment/client", client_appointment);
-// app.use("/appointment/doctor", doctor_appointment); //@TODO
+app.use("/payment", payment);
 
 
-app.route("/test/verify")
-   .post(async (req, res) => {
-      let client = twilio(TWILIO.ID, TWILIO.AUTH);
+//
+// -------------------------------------- END OF ROUTES -------------------------------------
+//
 
-      let params = req.body;
-
-      client.verify.services(TWILIO.SERVICE_ID)
-      .verificationChecks
-      .create({to: "+919165257248", code: params.code})
-      .then((res)=>{console.log("Success")})
-      .catch((err) => { console.error("ERROR")});
-   })
-
-   app.route("/test/send")
-   .post(async (req, res) => {
-      let client = twilio(TWILIO.ID, TWILIO.AUTH);
-
-      let params = req.body;
-
-      client.verify.services(TWILIO.SERVICE_ID)
-      .verifications
-      .create({to: "+919165257248", channel:"sms"})
-      .then((res)=>{console.log("Success")})
-      .catch((err) => { console.error("ERROR"); console.error(err)});
-   })
 
 
 
@@ -106,18 +85,5 @@ app.listen(port, async () => {
 
    // initialising database.
    await DB.initDB();
+   DB.getModel(options.client); // initialising passport here
 })
-
-
-
-
-
-
-
-
-
-//      NOTES      //
-
-// #FRONT_ERRORS: Create error classes to be sent to the frontend for better debugging in the future.
-// #TWILIO_ERRORS: Handle Errors properly
-// #SEND_RESPONSE: Send usable responses to the frontend

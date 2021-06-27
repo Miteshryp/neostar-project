@@ -6,6 +6,9 @@ export default function Dashboard(props) {
   let redirect = useHistory();
   let { state: signin_data } = props.location;
 
+  console.log("DASHBOARD - ")
+  console.log(signin_data);
+
   if (!signin_data) {
     console.error("ERROR: Cannot book an appointment without a signin");
     redirect.push("/signin");

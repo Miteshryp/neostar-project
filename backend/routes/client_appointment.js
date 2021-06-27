@@ -3,7 +3,7 @@ const DB = require("../database");
 const options = require("../db_settings"); 
 
 const routine = require("./helper/routine");
-const appointment_list = DB.getModel(options.appointment);
+// const appointment_list = DB.getModel(options.appointment);
 
 let router = express.Router();
 

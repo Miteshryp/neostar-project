@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 module.exports = {
    client: {
+      auth: true,
       name: "client",
+      plugins: [passportLocalMongoose],
       schema:
       {
          name: {
@@ -13,13 +16,12 @@ module.exports = {
             type: String, 
             required: true
          },
-         email: {
+         username: {
             type: String,
             required: true
          },
          password: {
             type: String,
-            required: true
          },
          address: String //{
          //    house: {type: String, required: true},
@@ -31,6 +33,7 @@ module.exports = {
 
    appointment: {
       name: "appointment", 
+      plugins: [],
       schema: {
          client_id: {
             type: mongoose.Schema.Types.ObjectId,

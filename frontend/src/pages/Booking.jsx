@@ -77,7 +77,7 @@ export default function BookingPage(props) {
         },
         prefill: {
           name: signin_data.name,
-          email: signin_data.email,
+          email: signin_data.username,
           phone_number: signin_data.phone,
         },
       };

@@ -11,25 +11,10 @@ const response = require("./response");
 
 const options = require("../../db_settings");
 const DB = require("../../database");
-const client_list = DB.getModel(options.client);
-const appointment_list = DB.getModel(options.appointment);
+const passport = require("passport");
 
 const logger = require("node-color-log");
-const bcrypt = require("bcrypt");
 
-
-
-
-// // // // // // //
-//
-//  Hash Functions
-//
-// // // // // // //
-
-async function hashPassword(password) {
-   let hash = await bcrypt.hash(password, (Number)(process.env.DB_SALT_ROUNDS));
-   return hash;
-}
 
 
 
@@ -43,7 +28,7 @@ async function hashPassword(password) {
 
 
 function isValidSignin(params) {
-   return !( params.email === undefined || params.email === null
+   return !( params.username === undefined || params.username === null
           || params.password === undefined || params.password === null
           );
 }
@@ -53,13 +38,9 @@ function isValidSignin(params) {
 //       One of them is always failing saying the number has not been registered.
 //       Investigate this.
 
-// @BUG: The function returns the hash stored in the database, when it should only
-//       send the details.
-//       Maybe this will be solved using cookies and sessions.
-async function verifySignIn(creds) {
+async function verifySignIn(creds, req, res) {
 
    logger.debug("\n\n********* Signin Routine *********\n\n");
-
    if(!isValidSignin(creds)) {
       // ERROR: the request data is invalid
       logger.error("Signin request parameters are corrupted.");
@@ -67,50 +48,35 @@ async function verifySignIn(creds) {
       return response.createResponse(response.type.invalidParameters);
    }
 
-   logger.debug("Credentials Passed: ");
-   logger.debug(creds);
-   
-   
-   // Credentials check
-
-   let entry = await client_list.find({email: creds.email});
-   if(entry === undefined || entry === null) {
-      // Phone number not found in the database, i.e. hasn't been registered yet.
-
-      logger.error("The Phone Number has not been registered yet.");
-      logger.debug("\n\n******** Signin Routing END ********\n\n");
-      return response.createResponse(response.type.signinFail);
-   }
+   await passport.authenticate("local", (err, user, info) => {
+      if(err) {
+         logger.error("Authentication Error");
+         logger.debug("\n\n******** Signin Routing END ********\n\n");
+         return res.send(response.createResponse(response.type.signinFail));
+      }
+      if(!user) {
+         logger.error("Authentication Failed");
+         logger.debug("\n\n******** Signin Routing END ********\n\n");
+         return res.send(response.createResponse(response.type.signinFail));
+      }
 
 
-   // @TODO: Some other credential checks in the future.
-   //Password check
-   let result = await checkPassword(creds.password, entry.password); // Checking the password with security features.
-   
-   if(!result) {
-      logger.error("ERROR: Incorrect Password");
-      logger.debug("\n\n******** Signin Routing END ********\n\n");
-      // @TODO: return specific signin error: we should get to know which field was incorrect.
-      return response.createResponse(response.type.signinFail);
-   }
-
-   logger.debug("Correct Creds: Match Found ->");
-   logger.debug(entry);
-
+      logger.info("Authentication Successful");
+      
+      // creating a session
+      req.login(user, (err) => {
+         if(err) {
+            logger.error("Session could not be created");
+            logger.debug("\n\n******** Signin Routing END ********\n\n");
+            return res.send(response.createResponse(response.type.codeRed));
+         }
+         logger.info("Session created successfully");
+         return res.send(response.createDataResponse(hideCredentials(creds), response.type.signinSuccess));
+      })
+   })(req, res, (err) => { logger.error(err); });
 
    logger.debug("\n\n******** Signin Routing END ********\n\n");
-
-   // All the checks are survived, meaning the credentials are correct
-   return response.createDataResponse(entry, response.type.signinSuccess);
 }
-
-
-async function checkPassword(password, hash) {
-   let result = await  bcrypt.compare(password, hash);
-   logger.debug("RESULT: " + result)
-   return result;
-}
-
 
 
 
@@ -132,7 +98,7 @@ async function checkPassword(password, hash) {
 function isValidRegister(params) {
    if(params.name === undefined || params.name === null
    || params.phone === undefined || params.phone === null
-   || params.email === undefined || params.email === null) {
+   || params.username === undefined || params.username === null) {
       // ERROR: the request data is invalid 
       console.error("Undefined / Null Arguments Received");
       return false;
@@ -141,7 +107,9 @@ function isValidRegister(params) {
 }
 
 
-async function verifyRegister(creds) {
+async function verifyRegister(creds, req, res) {
+   const Client = DB.getModel(options.client);
+
    if(!isValidRegister(creds)) {
       // ERROR: the request data is invalid 
       return response.createResponse(response.type.invalidParameters);
@@ -153,16 +121,15 @@ async function verifyRegister(creds) {
    //        We might need to modularize the database model class methods for this to just 
    //        return promises, but then again we might not.
    //        Give this a thought.
-   let entry = await client_list.find({email: creds.email});
+   let entry = await Client.find({username: creds.username});
    if(entry !== undefined && entry !== null) {
       // The given phone and name already exists.
       logger.error("The Email Already exists in the database.");
-      logger.debug(entry);
       return response.createResponse(response.type.duplicateEntry);
    }
 
    // @TODO: Decide if the phone number has to be unique to each account.
-   entry = await client_list.find({phone: creds.phone});
+   entry = await Client.find({phone: creds.phone});
    if(entry !== undefined && entry !== null) {
       // The phone number is already registered.
       logger.error("The phone number has already been registered");
@@ -175,6 +142,19 @@ async function verifyRegister(creds) {
 
 
 
+
+
+
+
+
+async function hideCredentials(user) {
+   let ret = user;
+   delete ret.password;
+   delete ret.hash;
+   delete ret.salt;
+   
+   return ret;
+}
 
 
 
@@ -254,4 +234,4 @@ async function checkOTP(phone, otp) {
 }
 
 
-module.exports = {hashPassword, verifySignIn, verifyRegister, sendOTP, checkOTP}
+module.exports = {isValidSignin,  verifySignIn, verifyRegister, hideCredentials, sendOTP, checkOTP}

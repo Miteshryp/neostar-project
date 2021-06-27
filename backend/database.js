@@ -3,9 +3,9 @@ if(dotenv.error) {
    logger.error("DotENV failed to initialise");
    logger.warn(dotenv.error)
 }
-
-
 const mongoose = require("mongoose");
+const passport = require("./passport")
+
 
 const DB_CREDS = {
    DB_NAME: process.env.DB_NAME,
@@ -14,25 +14,15 @@ const DB_CREDS = {
 }
 
 const logger = require("node-color-log");
-
 const m_models = {};
 
 
 class DBModel {
+
    constructor(options){
-      this.name = options.name;
 
-      this.schema = new mongoose.Schema(options.schema);
-      // this.schema.plugin(encrypt, {secret: process.env.DB_ENCRYPTION_SECRET, encryptedFields: encrypted_field});
-
-      this.model = mongoose.model(this.name, this.schema);
-
-      // Setting Default Error Handlers
-      this.insertion_err = options.insertion_error !== undefined ? option.insertion_error : insertion_err;
-      this.deletion_err = options.deletion_error !== undefined ? options.deletion_error : deletion_err;
-      this.modification_err = options.modification_error !== undefined ? options.modification_error : modification_err;
-      this.updation_err = options.updation_error !== undefined ? options.updation_error : updation_err;
-      this.search_err = options.search_error !== undefined ? options.search_error : search_err;
+      // Preventing Code duplication
+      this.changeParams(options);
    }
 
 
@@ -40,20 +30,25 @@ class DBModel {
       this.name = options.name;
       
       this.schema = new mongoose.Schema(options.schema);
-      // this.schema.plugin(encrypt, {secret: process.env.DB_ENCRYPTION_SECRET, encryptedFields: encrypted_field});
+      logger.debug("Model Created");
 
-      this.model = mongoose.model(this.name, this.schema);
+      options.plugins.forEach(element => {
+         this.schema.plugin(element);
+      });
+
+      this.model = new mongoose.model(this.name, this.schema);
 
       // Setting the error handlers in the options
-      this.insertion_err = options.insertion_error !== undefined ? option.insertion_error : this.insertion_err;
-      this.deletion_err = options.deletion_error !== undefined ? options.deletion_error : this.deletion_err;
-      this.modification_err = options.modification_error !== undefined ? options.modification_error : this.modification_err;
-      this.updation_err = options.updation_error !== undefined ? options.updation_error : this.updation_err;
-      this.search_err = options.search_error !== undefined ? options.search_error : this.search_err;
+      this.insertion_err = options.insertion_error !== undefined ? options.insertion_error : insertion_err;
+      this.deletion_err = options.deletion_error !== undefined ? options.deletion_error : deletion_err;
+      this.modification_err = options.modification_error !== undefined ? options.modification_error : modification_err;
+      this.updation_err = options.updation_error !== undefined ? options.updation_error : updation_err;
+      this.search_err = options.search_error !== undefined ? options.search_error : search_err;
    }
 
 
    async insert(json_obj) {
+
       let entry = new this.model(json_obj);
       await entry.save(this.insertion_err);
    }
@@ -90,8 +85,75 @@ class DBModel {
 
 
 
+
+
+
+
+
+
+
+
+class DBAuthModel extends DBModel {
+   constructor(params) {
+      super(params);
+
+      passport.use(this.model.createStrategy());
+
+      passport.serializeUser(this.model.serializeUser());
+      passport.deserializeUser(this.model.deserializeUser());
+
+      logger.debug("Client setup completed")
+   }
+
+   async insert(user) {
+
+      logger.debug("Model")
+      logger.debug(this.model)
+
+      let ret = undefined;
+
+      let password = user.password;
+      delete user.password;
+
+      logger.debug("PASSWORD - ")
+      logger.debug(password);
+
+      await this.model.register(user, password, async (err, userData) => {
+         if(err)  {
+            this.registerError(err);
+            ret = undefined;
+         }
+         else {
+            ret = userData;
+         }
+      })
+
+      return ret;
+   }
+
+   getModelInstance(user) {
+      return new this.model(user);
+   }
+
+   getRawModel() { 
+      return this.model;
+   }
+
+
+
+   registerError(err) {
+      logger.error("The Account could not be registered");
+      logger.error(err);
+
+      return err;
+   }
+}
+
+
+
 // options - 
 // name
+// auth
 // schema
 // insertion_error
 // deletion_error
@@ -105,7 +167,10 @@ exports.getModel = (options) => {
       return m_models[options.name];
    }
 
-   m_models[options.name] = new DBModel(options);
+   // auth field is defined for the collections storing credentials.
+   if(options.auth) m_models[options.name] = new DBAuthModel(options);
+   else m_models[options.name] = new DBModel(options);
+   
    return m_models[options.name];
 }
 
@@ -116,6 +181,8 @@ exports.getModel = (options) => {
 exports.initDB = async function() {
    // @TODO: import the credentials from a seperate file.
    let URL = getDBURL();
+   
+   mongoose.set("useCreateIndex", true);
    await mongoose.connect(URL, {useNewUrlParser: true, useUnifiedTopology: true})
            .then( () => {
                console.log("Successfully connected to MongoDB server") 
@@ -170,12 +237,12 @@ const getDBURL = function() {
 
 const initiation_err = (err) => {
    if(err) {
-      console.error("Database Module failed to connect. ")
-      console.log(err);
+      logger.error("Database Module failed to connect. ")
+      logger.error(err);
       return;
    }
    else {
-      console.log("Successfully connected to database: " + db_name);
+      logger.info("Successfully connected to database: " + db_name);
    }
 }
 
@@ -183,49 +250,49 @@ const initiation_err = (err) => {
 
 const insertion_err = (err) => {
    if(err) {
-      console.error("ERROR: Unable to insert the requested data entry.");
-      console.error(err);
+      logger.error("Unable to insert the requested data entry.");
+      logger.error(err);
    }
    else {
-      console.log("Entry successfully inserted. ");
+      logger.debug("Entry successfully inserted. ");
    }
 }
 const deletion_err = (err) => {
    if(err) {
-      console.error("ERROR: Unable to delete the requested data entry.");
-      console.error(err);
+      logger.error("Unable to delete the requested data entry.");
+      logger.error(err);
    }
    else {
-      console.log("Entry successfully deleted. ");
+      logger.debug("Entry successfully deleted. ");
    }
 }
 const updation_err = (err) => {
    if(err) {
-      console.error("ERROR: Unable to update the requested data entry.");
-      console.error(err);
+      logger.error("ERROR: Unable to update the requested data entry.");
+      logger.error(err);
    }
    else {
-      console.log("Entry successfully updated. ");
+      logger.log("Entry successfully updated. ");
    }
 
 }
 const modification_err = (err, results) => {
    if(err) {
-      console.error("ERROR: Unable to modify the requested query. ");
-      console.error(err);
+      logger.error("ERROR: Unable to modify the requested query. ");
+      logger.error(err);
    }
    else {
-      console.debug("Entry successfully modified. ");
+      logger.debug("Entry successfully modified. ");
    }
 }
 const search_err = (err) => {
    if(err) {
-      console.error("Failed to search the given query");
-      console.error(err);
+      logger.error("Failed to search the given query");
+      logger.error(err);
       return false;
    }
    else {
-      console.log("Query successfully processed");
+      logger.debug("Query successfully processed");
       return true;
    }
 }

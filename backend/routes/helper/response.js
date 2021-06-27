@@ -6,7 +6,6 @@ module.exports = {
       },
 
 
-
       signinFail: {
          code: 404,
          description: "Signin Failed: Email not registered." 
@@ -65,6 +64,14 @@ module.exports = {
          code: 606,
          description: "OTP Verified successfully"
       },
+
+
+
+
+      codeRed: {
+         code: 1404,
+         description: "Something went wrong!"
+      }
    },
 
 
