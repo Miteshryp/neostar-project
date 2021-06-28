@@ -1,14 +1,13 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 import axios from "../utils/backend_setting";
 import DatePicker from "react-datepicker";
 import { useHistory } from "react-router-dom";
 // import AppointmentCard from "../components/AppointmentCard";
-import { Container, Row, Col, Button, Form} from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 
 const payment_id = "rzp_test_Uqqdn4DKUadEKR";
-
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -25,14 +24,18 @@ function loadScript(src) {
 }
 
 export default function BookingPage(props) {
-
   const [bookingData, setBookingData] = useState({
-    location: "",
+    street: "",
     date: new Date(),
-    problem: ""
-  })
+    problem: "",
+    location: "",
+    city: "",
+    state: "",
+    landmark: "",
+    pincode: "",
+  });
 
-  console.log("BOOKDATA",bookingData)
+  console.log("BOOKDATA", bookingData);
   let redirect = useHistory();
   let { state: signin_data } = props.location;
 
@@ -53,7 +56,7 @@ export default function BookingPage(props) {
     }
 
     let data = null;
-    await axios.post('/payment').then((res)=>{
+    await axios.post("/payment").then((res) => {
       data = {};
       if (res.status === 200) {
         // response received.
@@ -85,11 +88,7 @@ export default function BookingPage(props) {
       console.log("Payment Object: ");
       console.log(paymentObject);
       paymentObject.open();
-    
-  
     });
-    
-
   };
 
   return (
@@ -103,15 +102,14 @@ export default function BookingPage(props) {
         <Col>
           <Form className="py-3">
             <h5 className="pb-3">Enter Details to book an appointment</h5>
+
+            <Form.Group className="my-2" controlId="clinicSelect">
+              <Form.Label>Street/Flat</Form.Label>
+              <Form.Control placeholder="Street/Flat Address" onChange={(e) => setBookingData({ ...bookingData, street: e.target.value })}></Form.Control>
+            </Form.Group>
             <Form.Group className="my-2" controlId="clinicSelect">
               <Form.Label>City and Clinic</Form.Label>
-              <Form.Control
-                as="select"
-                defaultValue={"Select"}
-                onChange={(e) =>
-                  setBookingData({ ...bookingData, location: e.target.value })
-                }
-              >
+              <Form.Control as="select" defaultValue={"Select"} onChange={(e) => setBookingData({ ...bookingData, location: e.target.value })}>
                 <option disabled>Select</option>
 
                 <option>Clinic - Delhi</option>
@@ -120,15 +118,27 @@ export default function BookingPage(props) {
               </Form.Control>
             </Form.Group>
 
+            <Form.Group className="my-2" controlId="state">
+              <Form.Label>State</Form.Label>
+              <Form.Control placeholder="Enter State" onChange={(e) => setBookingData({ ...bookingData, state: e.target.value })}></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="my-2" controlId="landmark">
+              <Form.Label>Landmark</Form.Label>
+              <Form.Control placeholder="Enter Landmark" onChange={(e) => setBookingData({ ...bookingData, landmark: e.target.value })}></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="my-2" controlId="pincode">
+              <Form.Label>Pincode / Area Code</Form.Label>
+              <Form.Control placeholder="000000" onChange={(e) => setBookingData({ ...bookingData, pincode: e.target.value })}></Form.Control>
+            </Form.Group>
             <Form.Group className="my-2" controlId="clinicSelect">
               <Form.Label>Appointment Date and Time</Form.Label>
               <Row>
                 <Col>
                   <DatePicker
                     selected={bookingData.date}
-                    onChange={(date) =>
-                      setBookingData({ ...bookingData, date })
-                    }
+                    onChange={(date) => setBookingData({ ...bookingData, date })}
                     showTimeSelect
                     dateFormat="dd/MM/yyyy p"
                     type="date"
@@ -143,24 +153,13 @@ export default function BookingPage(props) {
                 </Col>
               </Row>
             </Form.Group>
-            <Form.Group
-              className="my-2"
-              controlId="problem"
-              onChange={(e) =>
-                setBookingData({ ...bookingData, problem: e.target.value })
-              }
-            >
+
+            <Form.Group className="my-2" controlId="problem" onChange={(e) => setBookingData({ ...bookingData, problem: e.target.value })}>
               <Form.Label>Describe reason for appointment</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                placeholder="Regular Checkup, problem ..."
-              />
+              <Form.Control as="textarea" rows={3} placeholder="Regular Checkup, problem ..." />
             </Form.Group>
 
-            <Button onClick={payFunction}>
-              Submit
-            </Button>
+            <Button onClick={payFunction}>Submit</Button>
           </Form>
         </Col>
       </Row>
