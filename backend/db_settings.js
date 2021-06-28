@@ -23,10 +23,16 @@ module.exports = {
          password: {
             type: String,
          },
-         address: String //{
-         //    house: {type: String, required: true},
-         //    street: {type: String},
-         //    city: {type: String, required: true}
+         // Street City State Landmark pin
+            // house: {type: String, required: true},
+            // street: {type: String},
+            // city: {type: String, required: true}
+         street: String,
+         city: String,
+         state: String,
+
+         // appointments: {
+         //    type: m
          // }
       }
    },

@@ -1,8 +1,5 @@
-const dotenv = require("dotenv").config();
-if(dotenv.error) {
-   logger.error("DotENV failed to initialise");
-   logger.warn(dotenv.error)
-}
+const logger = require("node-color-log");
+
 const mongoose = require("mongoose");
 const passport = require("./passport")
 
@@ -12,8 +9,6 @@ const DB_CREDS = {
    URL: process.env.DB_URL, 
    DEBUG: process.env.DB_DEBUG
 }
-
-const logger = require("node-color-log");
 const m_models = {};
 
 

@@ -40,18 +40,14 @@ router.route("/")
                logger.debug(checkRegistration.status.code)
                // Proceed with sending the otp.
          }
-
-
-         logger.debug(" ----- Out of Switch Case ----");
-   
+         
+         
          // Sending the code to the mobile number.
          // @INFO: The code sent is valid for 10 mins
-
          let otpResponse = await routine.sendOTP(params.phone);
          logger.debug("OTP Response - ");
          logger.debug(otpResponse);
          res.send(otpResponse);
-      
       })
 
 

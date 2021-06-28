@@ -1,4 +1,11 @@
 // Required Libraries
+const logger = require("node-color-log");
+const dotenv = require("dotenv").config();
+if(dotenv.error) {
+   logger.error("DotENV failed to initialise");
+   logger.warn(dotenv.error)
+   return;
+}
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -7,7 +14,6 @@ const options = require("./db_settings")
 
 const session = require("express-session");
 const passport = require("./passport");
-const logger = require("node-color-log");
 
 const DB = require("./database");
 
@@ -63,6 +69,7 @@ const signin = require("./routes/signin");
 const register = require("./routes/register");
 const verify = require("./routes/verify");
 const payment = require("./routes/payment");
+const { client } = require("./db_settings");
 
 
 
@@ -70,6 +77,7 @@ app.use("/signin", signin);
 app.use('/register', register);
 app.use('/register/verify', verify); // @TEMP: verify can be generic
 app.use("/payment", payment);
+// app.use("/booking", client_booking)
 
 
 //

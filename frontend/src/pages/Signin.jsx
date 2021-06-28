@@ -33,8 +33,9 @@ function SignInPage() {
         }
       });
     }
+    console.log("GET - ")
     checkUser();
-  })
+  }, [redirect])
 
 
   let [errorStyle, setErrorStyle] = useState({ display: "none" });
