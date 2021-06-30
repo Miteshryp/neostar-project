@@ -1,13 +1,12 @@
+// ---------------------------------- Client's Login ---------------------------------------------------
+
+const logger = require("node-color-log");
 const express = require("express");
 
-const response = require("./helper/response");
-const routine = require("./helper/routine");
-const logger = require("node-color-log");
+const response = require("../helper/response");
+const routine = require("../helper/routine");
 
-const passport = require("passport")
-
-let router = express.Router();
-
+const router = express.Router();
 
 router.route('/')
       .get((req, res) => {
@@ -24,12 +23,8 @@ router.route('/')
          }
       })
       .post(async (req, res) => {
-
          let params = req.body;
-         let response = await routine.verifySignIn(params, req, res);
-
-         logger.debug("\n\n******** Signin Routing END ********\n\n");
-
+         let response = await routine.verifyLogin(params, req, res);
       })
    
 module.exports = router;

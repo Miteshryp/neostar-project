@@ -10,10 +10,10 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
-const options = require("./db_settings")
+const options = require("./schema")
 
 const session = require("express-session");
-const passport = require("./passport");
+const passport = require("passport");
 
 const DB = require("./database");
 
@@ -65,18 +65,22 @@ logger.debug("Passport Initiated");
 
 
 // Routes
-const signin = require("./routes/signin");
-const register = require("./routes/register");
-const verify = require("./routes/verify");
-const payment = require("./routes/payment");
-const { client } = require("./db_settings");
+
+const client = require("./routes/client");
+const doctor = require("./routes/doctor");
+const logout = require("./routes/logout");
 
 
 
-app.use("/signin", signin);
-app.use('/register', register);
-app.use('/register/verify', verify); // @TEMP: verify can be generic
-app.use("/payment", payment);
+
+app.use("/client", client);
+app.use("/doctor", doctor);
+app.use("/logout", logout)
+// app.use("/signin", signin);
+// app.use('/register', register);
+// app.use('/register/verify', verify); // @TEMP: verify can be generic
+// app.use("/payment", payment);
+// app.use("/logout", client_logout);
 // app.use("/booking", client_booking)
 
 

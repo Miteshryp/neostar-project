@@ -1,7 +1,8 @@
 const logger = require("node-color-log");
 
 const mongoose = require("mongoose");
-const passport = require("./passport")
+const passport = require("passport");
+const { ThisMonthList } = require("twilio/lib/rest/api/v2010/account/usage/record/thisMonth");
 
 
 const DB_CREDS = {
@@ -58,6 +59,17 @@ class DBModel {
          }
       });
 
+      return entry;
+   }
+
+   async findById(id) {
+      let entry = null;
+
+      await this.model.find(id, (err, res) => {
+         if(this.insertion_err(err)){
+            entry = res;
+         }
+      });
       return entry;
    }
 
@@ -234,10 +246,11 @@ const initiation_err = (err) => {
    if(err) {
       logger.error("Database Module failed to connect. ")
       logger.error(err);
-      return;
+      return false;
    }
    else {
       logger.info("Successfully connected to database: " + db_name);
+      return true;
    }
 }
 
@@ -247,27 +260,33 @@ const insertion_err = (err) => {
    if(err) {
       logger.error("Unable to insert the requested data entry.");
       logger.error(err);
+      return false;
    }
    else {
       logger.debug("Entry successfully inserted. ");
+      return true;
    }
 }
 const deletion_err = (err) => {
    if(err) {
       logger.error("Unable to delete the requested data entry.");
       logger.error(err);
+      return false;
    }
    else {
       logger.debug("Entry successfully deleted. ");
+      return true;
    }
 }
 const updation_err = (err) => {
    if(err) {
       logger.error("ERROR: Unable to update the requested data entry.");
       logger.error(err);
+      return false;
    }
    else {
       logger.log("Entry successfully updated. ");
+      return true;
    }
 
 }
@@ -275,9 +294,11 @@ const modification_err = (err, results) => {
    if(err) {
       logger.error("ERROR: Unable to modify the requested query. ");
       logger.error(err);
+      return false;
    }
    else {
       logger.debug("Entry successfully modified. ");
+      return true;
    }
 }
 const search_err = (err) => {

@@ -1,15 +1,20 @@
 const mongoose = require("mongoose");
+const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 
 module.exports = {
    client: {
-      auth: true,
+      auth: true, // Parameter that shows this collection stores accounts
       name: "client",
       plugins: [passportLocalMongoose],
       schema:
       {
-         name: {
+         firstName: {
             type: String,
+            required: true
+         },
+         lastName: {
+            type: String, 
             required: true
          },
          phone: {
@@ -30,6 +35,8 @@ module.exports = {
          street: String,
          city: String,
          state: String,
+         landmark: String,
+         pincode: Number,
 
          // appointments: {
          //    type: m
@@ -64,9 +71,28 @@ module.exports = {
             required: true
          },
 
-         description: {
+         problem: {
             type: String
          }
+      }
+   },
+
+
+   doctor: {
+      auth: true,
+      name: "doctor",
+      plugins: [passportLocalMongoose],
+
+      schema: {
+      }
+   },
+
+
+   clinic: {
+      name: "clinic",
+      plugins: [],
+      
+      schema: {
       }
    }
 };

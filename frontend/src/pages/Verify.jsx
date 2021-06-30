@@ -34,7 +34,7 @@ export default function VerifyPage(props) {
     };
 
     console.log("Sending Response");
-    let res = await axios.post('/register/verify', verify_post);
+    let res = await axios.post('/verify', verify_post);
     console.log("Response Received");
     if (res.status === 200) {
       // The backend responded

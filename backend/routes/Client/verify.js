@@ -1,15 +1,20 @@
+// -------------------------------- Client's Verification ----------------------------------------
+
+
+
+
+const logger = require("node-color-log");
+
 const express = require("express");
-const DB = require("../database");
-const passport = require("../passport");
-const response = require("./helper/response");
+const DB = require("../../database");
+const passport = require("passport");
+const response = require("../helper/response");
 
 // Initialise Database.
-const options = require("../db_settings.js");
+const options = require("../../schema.js");
 
 
-const routine = require("./helper/routine");
-const logger = require("node-color-log");
-const { ReservationList } = require("twilio/lib/rest/taskrouter/v1/workspace/task/reservation");
+const routine = require("../helper/routine");
 
 const router = express.Router();
 
@@ -18,7 +23,7 @@ router.route("/")
       .post(async(req, res) => {
 
          const Client = DB.getModel(options.client);
-         let params = req.body; // @TODO: Apply checks on passed params
+         let params = req.body;
 
          // // Duplicate Check
          let checkDuplicate = await routine.verifyRegister(params, req, res);
@@ -57,7 +62,7 @@ router.route("/")
                await passport.authenticate("local", (user, err, info) => {
                   if(err) {
                      logger.error("Authenticatoin Error");
-                     return res.send(response.createResponse(response.type.verificationFail));
+                     return res.send(response.createResponse(response.type.authCreationFail));
                   }
 
 
@@ -65,9 +70,9 @@ router.route("/")
                   req.login(user, (err) => {  
                      if(err) {
                         logger.error("Session creation failed");
-                        return res.send(response.createResponse(response.type.verificationFail));
+                        return res.send(response.createResponse(response.type.authCreationFail));
                      }
-                     logger.info("Session successfully created");
+                     logger.info("Session created successfully");
                      return res.send(response.createDataResponse(routine.hideCredentials(params), response.type.verificationSuccess));
                   })
                })(req, res, (err) => {

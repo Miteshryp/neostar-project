@@ -66,6 +66,50 @@ module.exports = {
       },
 
 
+      logoutSuccess: {
+         code: 240,
+         description: "Logged out Successfully"
+      },
+
+      logoutFail: {
+         code: 444,
+         description: "Logout Unsuccessful"
+      },
+
+
+
+
+
+      authCreationFail: {
+         code: 434,
+         description: "Authentication Unsuccessful. Session not created."
+      },
+
+      authCreationSuccess: {
+         code: 234, 
+         description: "Authentication Successful. Session created."
+      },
+
+
+      
+
+      authFail: {
+         code: 454,
+         description: "Authentication session not detected."
+      },
+
+      
+
+
+      bookingSuccess: {
+         code: 234,
+         description: "Appointment Booking Queued."
+      },
+
+      bookingFail: {
+         code: 494,
+         description: "Appointment could not be booked."
+      },
 
 
       codeRed: {

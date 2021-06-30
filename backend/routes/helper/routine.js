@@ -1,30 +1,29 @@
+const logger = require("node-color-log");
+
+const twilio  = require("twilio");
+const passport = require("passport");
+
+
+const DB = require("../../database");
+const options = require("../../schema");
+const response = require("./response");
+
 const TWILIO = {
    ID: process.env.TWILIO_ID,
    AUTH: process.env.TWILIO_AUTH,
    SERVICE_ID: process.env.TWILIO_SERVICE_ID
-}
-
-const twilio  = require("twilio");
+}; 
 const client = twilio(TWILIO.ID, TWILIO.AUTH);
 
-const response = require("./response");
-
-const options = require("../../db_settings");
-const DB = require("../../database");
-const passport = require("passport");
-
-const logger = require("node-color-log");
 
 
 
 
 
 
-// // // // // // // 
-//                
-// Sign In        
-//                
-// // // // // // //
+
+
+// ------------------------------------ Log In ---------------------------------------------
 
 
 function isValidSignin(params) {
@@ -34,11 +33,9 @@ function isValidSignin(params) {
 }
 
 
-// @BUG: There are 2 verifySignIn process going when we confirm the OTP.
-//       One of them is always failing saying the number has not been registered.
-//       Investigate this.
 
-async function verifySignIn(creds, req, res) {
+
+async function verifyLogin(creds, req, res) {
 
    logger.debug("\n\n********* Signin Routine *********\n\n");
    if(!isValidSignin(creds)) {
@@ -71,6 +68,7 @@ async function verifySignIn(creds, req, res) {
             return res.send(response.createResponse(response.type.codeRed));
          }
          logger.info("Session created successfully");
+         logger.debug("\n\n******** Signin Routing END ********\n\n");
          return res.send(response.createDataResponse(hideCredentials(creds), response.type.signinSuccess));
       })
    })(req, res, (err) => { logger.error(err); });
@@ -89,11 +87,8 @@ async function verifySignIn(creds, req, res) {
 
 
 
-// // // // // // // // 
-//                 
-// Registration    
-//                 
-// // // // // // // //
+// ----------------------------------- Registration -----------------------------------------
+
 
 function isValidRegister(params) {
    if(params.name === undefined || params.name === null
@@ -105,6 +100,8 @@ function isValidRegister(params) {
    }
    return true;
 }
+
+
 
 
 async function verifyRegister(creds, req, res) {
@@ -149,6 +146,7 @@ async function verifyRegister(creds, req, res) {
 
 async function hideCredentials(user) {
    let ret = user;
+   delete ret.id;
    delete ret.password;
    delete ret.hash;
    delete ret.salt;
@@ -167,11 +165,7 @@ async function hideCredentials(user) {
 
 
 
-// // // // // // //
-//                   
-//  OTP System       
-//                   
-// // // // // // // 
+// ---------------------------------- OTP System -------------------------------------------
 
 function handleSendError(err) {
    logger.error("The OTP could not be send");
@@ -196,6 +190,9 @@ function handleCheckError(err) {
    }
 }
 
+
+
+
 async function sendOTP(phone) {
       try {
          let otpResponse = await client.verify.services(TWILIO.SERVICE_ID)
@@ -209,6 +206,9 @@ async function sendOTP(phone) {
          return handleSendError(err);
       }
 }
+
+
+
 
 async function checkOTP(phone, otp) {
    try {
@@ -234,4 +234,4 @@ async function checkOTP(phone, otp) {
 }
 
 
-module.exports = {isValidSignin,  verifySignIn, verifyRegister, hideCredentials, sendOTP, checkOTP}
+module.exports = {isValidSignin,  verifyLogin, verifyRegister, hideCredentials, sendOTP, checkOTP}
