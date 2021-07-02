@@ -26,7 +26,7 @@ export default function Form(props) {
                </div>
 
                <button className="btn btn-dark btn-outline-success" type="submit"> Register </button> <br/>
-               <Link className="app-link" to="/signin"> Already signed up? </Link> */}
+               <Link className="app-link" to="/login"> Already signed up? </Link> */}
         </form>
       </div>
     </div>

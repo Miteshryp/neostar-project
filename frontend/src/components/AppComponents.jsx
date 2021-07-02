@@ -20,7 +20,7 @@ class Components extends BasicComponents{
                   <Link className="app-link" to="/about" > About </Link>
                </li>
                <li className="nav-item mr-2">
-                  <Link className="app-link" to="/signin" > Sign In </Link> 
+                  <Link className="app-link" to="/login" > Sign In </Link> 
                </li>
                <li className="nav-item mr-2">
                   <Link className="app-link" to="/register" > Register  </Link>

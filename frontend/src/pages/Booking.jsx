@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import axios from "../utils/backend_setting";
 import DatePicker from "react-datepicker";
 import { useHistory } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
+
 // import AppointmentCard from "../components/AppointmentCard";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,6 +26,8 @@ function loadScript(src) {
 }
 
 export default function BookingPage(props) {
+  const signin_data = useContext(UserContext);
+
   const [bookingData, setBookingData] = useState({
     street: "",
     date: new Date(),
@@ -37,11 +41,11 @@ export default function BookingPage(props) {
 
   console.log("BOOKDATA", bookingData);
   let redirect = useHistory();
-  let { state: signin_data } = props.location;
+  // let { state: signin_data } = props.location;
 
   if (!signin_data) {
     console.error("ERROR: Cannot book an appointment without a signin");
-    redirect.push("/signin");
+    redirect.push("/login");
   }
 
   console.log("RECEIVED AT BOOKING: ");

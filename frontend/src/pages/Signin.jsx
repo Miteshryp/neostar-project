@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import axios from "../utils/backend_setting";
 import { Form, Container, Button, Row, Col } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 function SignInPage() {
   let redirect = useHistory();
-
+  const { user, setUser } = useContext(UserContext);
   let [signIn, setSignIn] = React.useState({
     username: "",
     password: "",
@@ -20,23 +21,16 @@ function SignInPage() {
     });
   };
 
-  
-  useEffect( () => {
+  useEffect(() => {
     const checkUser = async () => {
-      await axios.get("/signin").then((res) => {
-        if(res.status === 200) {
-          // response received.
-          if(res.data.status.code === 401) {
-            // signin successful
-            redirect.push("/dashboard", res.data.data);
-          }
+      await axios.get("/client/login").then((res) => {
+        if (res.status === 200) {
+          setUser(res.data.data);
         }
       });
-    }
-    console.log("GET - ")
+    };
     checkUser();
-  }, [redirect])
-
+  }, []);
 
   let [errorStyle, setErrorStyle] = useState({ display: "none" });
 
@@ -51,35 +45,25 @@ function SignInPage() {
 
     // Check with the database if the account exists
     // let res = await axios.post(backend.url_path + backend.signin, signIn);
-    await axios.post("/signin", signIn).then((res) => {
+    await axios.post("/client/login", signIn).then((res) => {
       console.log("RES - ");
       console.log(res);
 
       if (res.status === 200) {
         //response received.
-        console.log("RECEIVED: ");
-        console.log(res);
         if (res.data) {
           // @TODO: backend response
           if (res.data.status.code === 401) {
-            //signin success
+            //login success
             // data received.
 
             makeErrorHidden();
-            setSignIn((prev) => {
-              return { ...res.data.data };
-            });
 
-            console.log("PRINTING: ");
-            console.log(res.data.data);
-            // Book an appointment.
-
-            console.log("DATA IS NOW:");
-            console.log(res.data.data)
-            redirect.push("/dashboard", res.data.data);
+            setUser(res.data.data);
           } else if (res.data.status.code === 404) {
             // signin failed: record not found
             console.error("ERROR: Invalid Credentials");
+            setUser(res.data.data);
             makeErrorVisible();
           } else {
             console.error("HERE");

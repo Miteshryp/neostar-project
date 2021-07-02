@@ -75,13 +75,15 @@ function RegisterPage() {
               <Form.Label>Address</Form.Label>
               <Form.Control required as="textarea" type="text" placeholder="Enter your address" name="address" onChange={(e) => changeInput(e)} />
             </Form.Group>
-            <p className="text-danger" style={errorStyle}>Email / Phone already registered in an account.</p>
+            <p className="text-danger" style={errorStyle}>
+              Email / Phone already registered in an account.
+            </p>
             <Button variant="primary" size={"md"} type="submit">
               Submit
             </Button>
             <div className="py-2 text-center">
               Already have an account ?{" "}
-              <Link className="app-link" to="/signin">
+              <Link className="app-link" to="/login">
                 Login Here
               </Link>
             </div>

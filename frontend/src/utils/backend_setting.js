@@ -2,7 +2,7 @@
 //   url_path: "http://localhost:5000",
 //   register: "/register",
 //   verification: "/register/verify",
-//   signin: "/signin",
+//   signin: "/login",
 //   payment: "/razorpay",
 // };
 
@@ -10,7 +10,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: "http://localhost:5000",
-  withCredentials: true
+  withCredentials: true,
 });
 
 export default instance;

@@ -1,25 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Image } from "react-bootstrap";
-import axios from "../utils/backend_setting";
+import React, { useContext } from "react";
+import { Navbar, Nav, Image, Button } from "react-bootstrap";
 import logo from "../assets/images/neostarlogo.png";
-function NavbarTop() {
-  const [user, setuser] = useState(0); //Not logged in
-  console.log(user);
-  useEffect(() => {
-    const checkUser = async () => {
-      await axios.get("/signin").then((res) => {
-        if (res.status === 200) {
-          // response received.
-          if (res.data.status.code === 401) {
-            // signin successful;
-            setuser(res.data.data);
-          }
-        }
-      });
-    };
-    checkUser();
-  }, []);
+import { UserContext } from "../contexts/UserContext";
+import axios from "../utils/backend_setting";
+import { useHistory } from "react-router-dom";
 
+function NavbarTop() {
+  const { user, setUser } = useContext(UserContext);
+  // const history = useHistory();
+  const logoutUser = () => {
+    axios.get("/logout").then((res) => {
+      console.log(res.data);
+      setUser(res.data.data);
+    });
+  };
   return (
     <Navbar bg="light" expand="lg">
       <Navbar.Brand href="/">
@@ -30,15 +24,17 @@ function NavbarTop() {
         <Nav className="ml-auto">
           <Nav.Link href="/">Home</Nav.Link>
           <Nav.Link href="/about">About</Nav.Link>
-
+          {console.log("USER HAI", user)}
           {user ? (
             <>
-              <Nav.Link href="/logout">Logout</Nav.Link>
+              <Button variant="danger" onClick={logoutUser}>
+                Logout
+              </Button>
             </>
           ) : (
             <>
               <Nav.Link href="/register">Register</Nav.Link>
-              <Nav.Link href="/signin">Login</Nav.Link>
+              <Nav.Link href="/login">Login</Nav.Link>
             </>
           )}
         </Nav>

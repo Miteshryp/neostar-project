@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavbarTop from "./components/Navbar";
 
@@ -11,20 +11,33 @@ import BookingPage from "./pages/Booking";
 
 import "./App.scss";
 import Dashboard from "./pages/Dashboard";
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
+  const { user } = useContext(UserContext);
+
   return (
     <div className="App">
       <Router>
         <NavbarTop />
+
         <Switch>
-        <Route path="/dashboard" component={Dashboard} />
-          <Route path="/signin" component={SignInPage} />
+          <Route exact path="/about" component={AboutPage} />
+          <Route exact path="/" component={HomePage} />
+
+          {console.log("USERNAME", user)}
+          {/* {user ? ( */}
+          {/* <> */}
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/booking" component={BookingPage} />
+          {/* </> */}
+          {/* ) : ( */}
+          {/* <> */}
+          <Route path="/login" component={SignInPage} />
           <Route path="/register" component={RegisterPage} />
           <Route path="/verify" component={VerifyPage} />
-          <Route path="/about" component={AboutPage} />          
-          <Route path="/booking" component={BookingPage} />
-          <Route path="/" component={HomePage} />
+          {/* </> */}
+          {/* )} */}
         </Switch>
       </Router>
     </div>
