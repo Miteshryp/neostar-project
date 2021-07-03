@@ -21,7 +21,7 @@ router.route("/").get((req, res) => {
   //        We cannot return the data if the user is a doctor.
 
   logger.debug("Login Detected");
-  return res.send(response.createDataResponse(routine.hideCredentials(req.user), null));
+  return res.send(response.createDataResponse(routine.hideCookieCredentials(req.user), null));
 });
 
 module.exports = router;

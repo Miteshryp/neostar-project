@@ -112,6 +112,11 @@ module.exports = {
       },
 
 
+      noData: {
+         code: 300, 
+         description: "No Data found"
+      },
+
       codeRed: {
          code: 1404,
          description: "Something went wrong!"

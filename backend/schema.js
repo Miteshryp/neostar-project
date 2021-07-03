@@ -93,6 +93,8 @@ module.exports = {
       plugins: [],
       
       schema: {
+         group: Boolean,
+         doctors: []
       }
    }
 };

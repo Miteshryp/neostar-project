@@ -14,6 +14,12 @@ const TWILIO = {
 };
 const client = twilio(TWILIO.ID, TWILIO.AUTH);
 
+
+
+
+
+
+
 // ------------------------------------ Log In ---------------------------------------------
 
 function isValidSignin(params) {
@@ -61,10 +67,20 @@ async function verifyLogin(creds, req, res) {
   logger.debug("\n\n******** Signin Routing END ********\n\n");
 }
 
+
+
+
+
+
+
+
+//
 // ----------------------------------- Registration -----------------------------------------
+//
+
 
 function isValidRegister(params) {
-  if (params.name === undefined || params.name === null || params.phone === undefined || params.phone === null || params.username === undefined || params.username === null) {
+  if (params.firstName === undefined || params.firstName === null || params.lastName === undefined || params.lastName === null || params.phone === undefined || params.phone === null || params.username === undefined || params.username === null) {
     // ERROR: the request data is invalid
     console.error("Undefined / Null Arguments Received");
     return false;
@@ -104,15 +120,49 @@ async function verifyRegister(creds, req, res) {
   return response.createResponse(response.type.validRegistration);
 }
 
-async function hideCredentials(user) {
+
+
+
+
+
+
+
+
+//
+// ---------------------------- Utility Functions ----------------------------
+//
+
+function hideCookieCredentials(user) {
+  let ret = {...user._doc};
+  return hideCredentials(ret);
+}
+
+function hideCredentials(user) {
   let ret = user;
-  delete ret.id;
+
   delete ret.password;
   delete ret.hash;
   delete ret.salt;
+  delete ret._id;
+  delete ret.__v;
 
   return ret;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ---------------------------------- OTP System -------------------------------------------
 
@@ -170,4 +220,19 @@ async function checkOTP(phone, otp) {
   }
 }
 
-module.exports = { isValidSignin, verifyLogin, verifyRegister, hideCredentials, sendOTP, checkOTP };
+
+
+
+
+
+
+
+
+
+
+
+//
+// ------------------------ End of Functions ---------------------------------
+//
+
+module.exports = { isValidSignin, verifyLogin, verifyRegister, hideCookieCredentials, hideCredentials, sendOTP, checkOTP };
