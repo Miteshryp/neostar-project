@@ -7,7 +7,7 @@ import { Link, useHistory } from "react-router-dom";
 function RegisterPage() {
   let redirect = useHistory();
 
-  let [input, setInput] = useState({ name: "", phone: "", username: "", password: "", address: "" });
+  let [input, setInput] = useState({ firstName: "", lastName: "", phone: "", username: "", password: "", street: "", city: "", pincode: "", state: "", landmark: "" });
   let [errorStyle, setErrorStyle] = useState({ display: "none" });
 
   const makeErrorVisible = () => setErrorStyle({ display: "block" });
@@ -27,7 +27,7 @@ function RegisterPage() {
   async function onSubmit(event) {
     event.preventDefault();
 
-    await axios.post("/register", input).then((res) => {
+    await axios.post("/client/register", input).then((res) => {
       console.log(res);
       if (res.data) {
         switch (res.data.status.code) {
@@ -64,16 +64,42 @@ function RegisterPage() {
               <Form.Control required type="password" placeholder="Password" name="password" onChange={(e) => changeInput(e)} />
             </Form.Group>
             <Form.Group>
-              <Form.Label>Name</Form.Label>
-              <Form.Control required type="name" placeholder="Enter name" name="name" onChange={(e) => changeInput(e)} />
+              <Form.Label>Firstname</Form.Label>
+              <Form.Control type="text" required placeholder="Enter first name" name="firstName" onChange={(e) => changeInput(e)} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Lastname</Form.Label>
+              <Form.Control required type="text" placeholder="Enter last name" name="lastName" onChange={(e) => changeInput(e)} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Phone</Form.Label>
-              <Form.Control required type="tel" placeholder="+91 1234567890" name="phone" onChange={(e) => changeInput(e)} />
+              <Form.Control required type="tel" placeholder="+911234567890" name="phone" onChange={(e) => changeInput(e)} />
             </Form.Group>
+
+            <h4>Address</h4>
             <Form.Group>
-              <Form.Label>Address</Form.Label>
-              <Form.Control required as="textarea" type="text" placeholder="Enter your address" name="address" onChange={(e) => changeInput(e)} />
+              <Form.Label>Street</Form.Label>
+              <Form.Control type="text" placeholder="Enter your street" name="street" onChange={(e) => changeInput(e)} />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>City</Form.Label>
+              <Form.Control type="text" placeholder="Enter your city" name="city" onChange={(e) => changeInput(e)} />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>State</Form.Label>
+              <Form.Control type="text" placeholder="Enter your state" name="state" onChange={(e) => changeInput(e)} />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Landmark</Form.Label>
+              <Form.Control type="text" placeholder="Enter your landmark" name="landmark" onChange={(e) => changeInput(e)} />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Pincode</Form.Label>
+              <Form.Control type="text" placeholder="Enter your pincode" name="pincode" onChange={(e) => changeInput(e)} />
             </Form.Group>
             <p className="text-danger" style={errorStyle}>
               Email / Phone already registered in an account.

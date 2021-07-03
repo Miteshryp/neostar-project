@@ -3,15 +3,17 @@ import { Navbar, Nav, Image, Button } from "react-bootstrap";
 import logo from "../assets/images/neostarlogo.png";
 import { UserContext } from "../contexts/UserContext";
 import axios from "../utils/backend_setting";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 function NavbarTop() {
+  const redirect = useHistory();
   const { user, setUser } = useContext(UserContext);
-  // const history = useHistory();
+  console.log("Nav");
   const logoutUser = () => {
     axios.get("/logout").then((res) => {
       console.log(res.data);
       setUser(res.data.data);
+      redirect.push("/login");
     });
   };
   return (
@@ -22,19 +24,31 @@ function NavbarTop() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <Nav.Link href="/">Home</Nav.Link>
-          <Nav.Link href="/about">About</Nav.Link>
+          <Link className="nav-link" to="/">
+            Home
+          </Link>
+          <Link className="nav-link" to="/about">
+            About
+          </Link>
           {console.log("USER HAI", user)}
           {user ? (
             <>
+              <Link className="nav-link" to="/dashboard">
+                Dashboard
+              </Link>
+
               <Button variant="danger" onClick={logoutUser}>
                 Logout
               </Button>
             </>
           ) : (
             <>
-              <Nav.Link href="/register">Register</Nav.Link>
-              <Nav.Link href="/login">Login</Nav.Link>
+              <Link className="nav-link" to="/register">
+                Register
+              </Link>
+              <Link className="nav-link" to="/login">
+                Login
+              </Link>
             </>
           )}
         </Nav>

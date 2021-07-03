@@ -1,15 +1,15 @@
 // import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 // import backend from "../utils/backend_setting";
 import axios from "../utils/backend_setting";
 import { useHistory } from "react-router-dom";
-import { Form, Container, Button, Row, Col } from "react-bootstrap";
-
+import { Form, Container, Button, Row, Col, Modal, Image } from "react-bootstrap";
+import successPng from "../assets/images/success.png";
 export default function VerifyPage(props) {
   let redirect = useHistory();
   let { state: register_data } = props.location;
   // let register_data = {phone: "3434"};
-
+  const [show, setShow] = useState(0);
   // Verify page can only be routed from the register page.
   // If it was routed manually without any data, we redirect to the home page.
   if (!register_data) {
@@ -34,25 +34,30 @@ export default function VerifyPage(props) {
     };
 
     console.log("Sending Response");
-    let res = await axios.post("/verify", verify_post);
-    console.log("Response Received");
-    if (res.status === 200) {
-      // The backend responded
-      if (res.data.status.code === 606) {
-        //verification success
-        makeErrorHidden();
-        console.log("Verification successful");
-        redirect.push("/login", register_data);
+    await axios.post("/client/verify", verify_post).then((res) => {
+      console.log("Response Received");
+      if (res.status === 200) {
+        // The backend responded
+        console.log("STATUS", res);
+        console.log("code", res.data.status.code);
+
+        if (res.data.status.code === 606 || res.data.status.code === 508) {
+          //verification success
+          makeErrorHidden();
+          console.log("Verification successful");
+          setShow(1);
+          // redirect.push("/login", register_data);
+        } else {
+          // backend sent an error.
+          // Could not verify the otp
+          console.log("OTP verification failed");
+          makeErrorVisible();
+        }
       } else {
-        // backend sent an error.
-        // Could not verify the otp
-        console.log("OTP verification failed");
+        console.error("ERROR: Protocol Error");
         makeErrorVisible();
       }
-    } else {
-      console.error("ERROR: Protocol Error");
-      makeErrorVisible();
-    }
+    });
   }
 
   return (
@@ -82,6 +87,21 @@ export default function VerifyPage(props) {
           </Form>
         </Col>
       </Row>
+
+      <Modal show={show} size="sm" aria-labelledby="contained-modal-title-vcenter" centered>
+        <Modal.Body className="success-modal">
+          <Image fluid src={successPng} />
+          <p className="text-muted">Your OTP was successfully verified</p>
+          <Button
+            variant={"success"}
+            onClick={() => {
+              redirect.push("/login");
+            }}
+          >
+            Continue to Login
+          </Button>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }

@@ -25,8 +25,10 @@ function loadScript(src) {
   });
 }
 
-export default function BookingPage(props) {
-  const signin_data = useContext(UserContext);
+export default function BookingPage() {
+  let redirect = useHistory();
+
+  const { user } = useContext(UserContext);
 
   const [bookingData, setBookingData] = useState({
     street: "",
@@ -40,16 +42,15 @@ export default function BookingPage(props) {
   });
 
   console.log("BOOKDATA", bookingData);
-  let redirect = useHistory();
-  // let { state: signin_data } = props.location;
+  // let { state: user } = props.location;
 
-  if (!signin_data) {
+  if (!user) {
     console.error("ERROR: Cannot book an appointment without a signin");
     redirect.push("/login");
   }
 
   console.log("RECEIVED AT BOOKING: ");
-  console.log(signin_data);
+  console.log(user);
 
   const payFunction = async function () {
     const script_res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
@@ -83,9 +84,9 @@ export default function BookingPage(props) {
           alert(response.razorpay_signature);
         },
         prefill: {
-          name: signin_data.name,
-          email: signin_data.username,
-          phone_number: signin_data.phone,
+          name: user.name,
+          email: user.username,
+          phone_number: user.phone,
         },
       };
       const paymentObject = new window.Razorpay(options);
@@ -99,7 +100,7 @@ export default function BookingPage(props) {
     <Container className="py-3">
       <Row>
         <Col className="py-2">
-          <h4>Welcome, {signin_data.name}</h4>
+          <h4>Welcome, {user.name}</h4>
         </Col>
       </Row>
       <Row>

@@ -1,5 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import axios from "./utils/backend_setting";
+
 import NavbarTop from "./components/Navbar";
 
 import RegisterPage from "./pages/Register";
@@ -14,7 +16,13 @@ import Dashboard from "./pages/Dashboard";
 import { UserContext } from "./contexts/UserContext";
 
 function App() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  useEffect(() => {
+    axios.get("/client/login").then((res) => {
+      console.log("HELOEIOFHRIB", res);
+      setUser(res.data.data);
+    });
+  }, [setUser]);
 
   return (
     <div className="App">
@@ -26,18 +34,18 @@ function App() {
           <Route exact path="/" component={HomePage} />
 
           {console.log("USERNAME", user)}
-          {/* {user ? ( */}
-          {/* <> */}
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/booking" component={BookingPage} />
-          {/* </> */}
-          {/* ) : ( */}
-          {/* <> */}
-          <Route path="/login" component={SignInPage} />
-          <Route path="/register" component={RegisterPage} />
-          <Route path="/verify" component={VerifyPage} />
-          {/* </> */}
-          {/* )} */}
+          {user ? (
+            <>
+              <Route path="/dashboard" component={Dashboard} />
+              <Route path="/booking" component={BookingPage} />
+            </>
+          ) : (
+            <>
+              <Route path="/login" component={SignInPage} />
+              <Route path="/register" component={RegisterPage} />
+              <Route path="/verify" component={VerifyPage} />
+            </>
+          )}
         </Switch>
       </Router>
     </div>

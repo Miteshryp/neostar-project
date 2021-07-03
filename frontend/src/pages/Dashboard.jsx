@@ -7,13 +7,14 @@ import { UserContext } from "../contexts/UserContext";
 
 export default function Dashboard() {
   let redirect = useHistory();
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     axios.get("/client/login").then((res) => {
       console.log("HELOEIOFHRIB", res);
+      setUser(res.data.data);
     });
-  }, []);
+  }, [setUser]);
 
   return (
     <Container className="py-3">
@@ -28,7 +29,7 @@ export default function Dashboard() {
               <Button
                 className="float-sm-right"
                 onClick={() => {
-                  redirect.push("/booking", user);
+                  redirect.push("/booking");
                 }}
               >
                 Book an Appointment

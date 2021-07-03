@@ -22,16 +22,8 @@ function SignInPage() {
   };
 
   useEffect(() => {
-    const checkUser = async () => {
-      await axios.get("/client/login").then((res) => {
-        if (res.status === 200) {
-          setUser(res.data.data);
-        }
-      });
-    };
-    checkUser();
-  }, []);
-
+    if (user) redirect.push("/dashboard");
+  });
   let [errorStyle, setErrorStyle] = useState({ display: "none" });
 
   const makeErrorVisible = () => setErrorStyle({ display: "block" });
@@ -60,6 +52,7 @@ function SignInPage() {
             makeErrorHidden();
 
             setUser(res.data.data);
+            redirect.push("/dashboard");
           } else if (res.data.status.code === 404) {
             // signin failed: record not found
             console.error("ERROR: Invalid Credentials");
