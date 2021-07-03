@@ -51,40 +51,52 @@ router.route("/")
          // insert into database if the otp was correct.
          if(checkResponse.status === response.type.verificationSuccess) {
                let reg_response = await Client.insert(params);
+               logger.debug(`Reg response in post - ${reg_response}`);
+               logger.debug("End of Function");
 
                if(!reg_response) {
                   // The registration failed.
                   // @TODO - Handle the different types of error for registration.
                   return res.send(response.createResponse(response.type.invalidRegistration));
                }
-            
-               // The registration was successful. authenticate the user
-               await passport.authenticate("local", (user, err, info) => {
-                  if(err) {
-                     logger.error("Authenticatoin Error");
-                     return res.send(response.createResponse(response.type.authCreationFail));
-                  }
 
 
-                  logger.info("Authentication Successful");
-                  req.login(user, (err) => {  
-                     if(err) {
-                        logger.error("Session creation failed");
-                        return res.send(response.createResponse(response.type.authCreationFail));
-                     }
-                     logger.info("Session created successfully");
-                     return res.send(response.createDataResponse(routine.hideCredentials(params), response.type.verificationSuccess));
-                  })
-               })(req, res, (err) => {
-                  logger.error(err);
-               });       
+               // @TODO: Auto Authentication on Register
+
+
+               // await passport.authenticate("local", (user, err, info) => {
+               //    if(err) {
+               //       logger.error("Authentication Error");
+               //       return res.send(response.createResponse(response.type.authCreationFail));
+               //    }
+               //    logger.info("Authentication Successful");
+
+               //    req.login(user, async (err) => {  
+               //       if(err) {
+               //          logger.error("Session creation failed");
+               //          return res.send(response.createResponse(response.type.authCreationFail));
+               //       }
+   
+   
+               //       logger.info("Session created successfully");
+               //       return res.send(response.createDataResponse(routine.hideCredentials(params), response.type.verificationSuccess));
+               //    });
+
+               // })(req, res, (err) => {
+               //    logger.error(err);
+               // });    
+
 
                
-               return;        
+            
+               // The registration was successful. authenticate the user
+   
+
+               return res.send(response.createResponse(response.type.verificationSuccess));        
             
          }
 
-         res.send(checkResponse);
+         return res.send(checkResponse);
 
       });
 

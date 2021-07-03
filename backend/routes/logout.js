@@ -13,7 +13,7 @@ router.route("/")
             logger.warn("User logged out.");
             return res.send(response.createResponse(response.type.logoutSuccess));
          }
-
+         
          logger.error("User logout could not go through.");
          return res.send(response.createResponse(response.type.logoutFail));
       })

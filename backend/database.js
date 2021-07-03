@@ -2,7 +2,6 @@ const logger = require("node-color-log");
 
 const mongoose = require("mongoose");
 const passport = require("passport");
-const { ThisMonthList } = require("twilio/lib/rest/api/v2010/account/usage/record/thisMonth");
 
 
 const DB_CREDS = {
@@ -113,29 +112,34 @@ class DBAuthModel extends DBModel {
    }
 
    async insert(user) {
-
-      logger.debug("Model")
-      logger.debug(this.model)
-
       let ret = undefined;
 
       let password = user.password;
       delete user.password;
 
-      logger.debug("PASSWORD - ")
-      logger.debug(password);
+      logger.debug("Before Register - ");
 
-      await this.model.register(user, password, async (err, userData) => {
-         if(err)  {
-            this.registerError(err);
-            ret = undefined;
-         }
-         else {
-            ret = userData;
-         }
-      })
+      try {
+         let userData = await this.model.register(user, password) //, (err, userData) => {
+            // if(err)  {
+            //    this.registerError(err);
+            //    ret = undefined;
+            //    return null;
+            // }
+            // else {
+            //    ret = userData;
+            //    logger.debug(`Ret is assigned - ${ret}`);
+            // }
+         logger.debug(userData);
+         return userData;
+        // })
 
-      return ret;
+      }
+      catch(err) {
+         this.registerError(err);
+         return undefined;
+      }
+
    }
 
    getModelInstance(user) {
