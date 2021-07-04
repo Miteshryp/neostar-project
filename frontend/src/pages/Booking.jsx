@@ -8,6 +8,15 @@ import { UserContext } from "../contexts/UserContext";
 // import AppointmentCard from "../components/AppointmentCard";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+
+const MapComponent = withScriptjs(
+  withGoogleMap((props) => (
+    <GoogleMap defaultZoom={8} defaultCenter={{ lat: 28.70406, lng: 77.102493 }}>
+      {props.isMarkerShown && <Marker position={{ lat: 28.70406, lng: 77.102493 }} />}
+    </GoogleMap>
+  ))
+);
 
 const payment_id = "rzp_test_Uqqdn4DKUadEKR";
 
@@ -61,7 +70,7 @@ export default function BookingPage() {
     }
 
     let data = null;
-    await axios.post("/payment").then((res) => {
+    await axios.post("/client/payment").then((res) => {
       data = {};
       if (res.status === 200) {
         // response received.
@@ -100,13 +109,23 @@ export default function BookingPage() {
     <Container className="py-3">
       <Row>
         <Col className="py-2">
-          <h4>Welcome, {user.name}</h4>
+          <h4>
+            Welcome, {user.firstName} {user.lastName}
+          </h4>
         </Col>
       </Row>
       <Row>
         <Col>
           <Form className="py-3">
             <h5 className="pb-3">Enter Details to book an appointment</h5>
+
+            <MapComponent
+              isMarkerShown
+              googleMapURL="https://maps.googleapis.com/maps/api/js?sensor=false&callback=initMap"
+              loadingElement={<div style={{ height: `100%` }} />}
+              containerElement={<div style={{ height: `400px` }} />}
+              mapElement={<div style={{ height: `100%` }} />}
+            />
 
             <Form.Group className="my-2" controlId="clinicSelect">
               <Form.Label>Street/Flat</Form.Label>

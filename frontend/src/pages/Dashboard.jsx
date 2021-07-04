@@ -23,7 +23,9 @@ export default function Dashboard() {
         <>
           <Row>
             <Col sm={6} className="text-center">
-              <h4>Welcome, {user.name}</h4>
+              <h4>
+                Welcome, {user.firstName} {user.lastName}
+              </h4>
             </Col>
             <Col sm={6} className="text-center">
               <Button

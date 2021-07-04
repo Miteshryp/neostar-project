@@ -9,7 +9,7 @@ export default function VerifyPage(props) {
   let redirect = useHistory();
   let { state: register_data } = props.location;
   // let register_data = {phone: "3434"};
-  const [show, setShow] = useState(0);
+  const [show, setShow] = useState(false);
   // Verify page can only be routed from the register page.
   // If it was routed manually without any data, we redirect to the home page.
   if (!register_data) {
