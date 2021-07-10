@@ -34,7 +34,7 @@ export default function BookingPage() {
   const [bookingData, setBookingData] = useState({
     street: "",
     issueDate: new Date(),
-    appointmentDate: Date(),
+    appointmentDate: new Date(),
     problem: "",
     location: "",
     city: "",
@@ -104,6 +104,12 @@ export default function BookingPage() {
         // response received.
         console.log(res);
         data = res.data;
+
+        // @Todo
+        // await axios.post("/client/booking", bookingData).then((res) => {
+
+        //   console.log(res);
+        // }
       }
       console.log(data);
 
@@ -189,7 +195,7 @@ export default function BookingPage() {
               <Row>
                 <Col>
                   <DatePicker
-                    selected={bookingData.date}
+                    selected={bookingData.appointmentDate}
                     onChange={(date) => setBookingData({ ...bookingData, date })}
                     showTimeSelect
                     dateFormat="dd/MM/yyyy p"
