@@ -14,6 +14,7 @@ import BookingPage from "./pages/Booking";
 import "./App.scss";
 import Dashboard from "./pages/Dashboard";
 import { UserContext } from "./contexts/UserContext";
+import DoctorDashboad from "./pages/DoctorDashboard";
 
 function App() {
   const { user, setUser } = useContext(UserContext);
@@ -41,6 +42,8 @@ function App() {
             </>
           ) : (
             <>
+              <Route path="/doctor-dashboard" component={DoctorDashboad} />
+
               <Route path="/login" component={SignInPage} />
               <Route path="/register" component={RegisterPage} />
               <Route path="/verify" component={VerifyPage} />
