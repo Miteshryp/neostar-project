@@ -43,12 +43,12 @@ class DBModel {
 
 
    async insert(json_obj) {
-
       let entry = new this.model(json_obj);
       await entry.save(this.insertion_err);
    }
 
 
+   // @TODO: transform to try/catch
    async find(query) {
       let entry = null;
 
@@ -61,11 +61,23 @@ class DBModel {
       return entry;
    }
 
+   // @TODO: transform to try/catch
+   async findAll(query) {
+      let entry = null;
+      await this.model.find(query, async (err, results) => {
+         if(this.search_err(err)) {
+            entry = results;
+         }
+      });
+
+      return entry;
+   }
+
+   // @TODO: transform to try/catch
    async findById(id) {
       let entry = null;
-
       await this.model.find(id, (err, res) => {
-         if(this.insertion_err(err)){
+         if(this.search_err(err)){
             entry = res;
          }
       });
@@ -190,7 +202,6 @@ exports.getModel = (options) => {
 
 
 exports.initDB = async function() {
-   // @TODO: import the credentials from a seperate file.
    let URL = getDBURL();
    
    mongoose.set("useCreateIndex", true);

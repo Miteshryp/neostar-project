@@ -111,6 +111,11 @@ module.exports = {
          description: "Appointment could not be booked."
       },
 
+      noBookingFound: {
+         code: 712,
+         description: "No Bookings were found for the user"
+      },
+
 
       noData: {
          code: 300, 
@@ -120,7 +125,32 @@ module.exports = {
       codeRed: {
          code: 1404,
          description: "Something went wrong!"
-      }
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      appointmentRescheduled: {
+         code: 911,
+         description: "Appointment has been rescheduled."
+      },
+      appointmentConfirmed: {
+         code: 912,
+         description: "Appointment has been confirmed"
+      },
+   
+   
    },
 
 

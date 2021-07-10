@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 
 module.exports = {
@@ -28,10 +27,7 @@ module.exports = {
          password: {
             type: String,
          },
-         // Street City State Landmark pin
-            // house: {type: String, required: true},
-            // street: {type: String},
-            // city: {type: String, required: true}
+
          street: String,
          city: String,
          state: String,
@@ -48,13 +44,17 @@ module.exports = {
       name: "appointment", 
       plugins: [],
       schema: {
-         client_id: {
+         clientID: {
             type: mongoose.Schema.Types.ObjectId,
             required: true
          },
 
          doctorID: {
             type: mongoose.Schema.Types.ObjectId,
+         },
+
+         clinicID: {
+            type: mongoose.Schema.Types.ObjectId
          },
 
          issueDate: {
@@ -79,11 +79,29 @@ module.exports = {
 
 
    doctor: {
-      auth: true,
+      // auth: true,
       name: "doctor",
-      plugins: [passportLocalMongoose],
+      plugins: [],
+
+      // plugins: [passportLocalMongoose],
 
       schema: {
+         firstName: {
+            type: String,
+            required: true
+         },
+         lastName: {
+            type: String,
+            required: true
+         },
+
+         qualifications: {
+            type: Buffer
+         },
+
+         clinicID: {
+            type: mongoose.Schema.Types.ObjectId
+         }
       }
    },
 
@@ -91,10 +109,24 @@ module.exports = {
    clinic: {
       name: "clinic",
       plugins: [],
+
+      // location of the clinic
+      
       
       schema: {
+         name: {
+            type: String,
+            required: true
+         },
+
          group: Boolean,
-         doctors: []
+         //location: null,
+
+         doctors: Array,
+
+         latitude: Number,
+         longitude: Number,
+      
       }
    }
 };

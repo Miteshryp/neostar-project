@@ -6,9 +6,10 @@ const options = require("../../schema")
 const routine = require("../helper/routine");
 const response = require("../helper/response");
 
-const AUTH_FAIL = response.createResponse(response.type.authFail);
-
+ 
 const router = express.Router();
+
+const AUTH_FAIL = response.createResponse(response.type.authFail);
 
 router.route("/")
       .get(async (req, res) => {
@@ -17,13 +18,13 @@ router.route("/")
             return res.send(AUTH_FAIL);
          }
 
+         // @TODO: Check parameters to see if the user is a client
+
          let Appointment = DB.getModel(options.appointment);
-         let db_response = await Appointment.find({client_id: req.user._id});
+         let db_response = await Appointment.findAll({client_id: req.user._id});
 
-         let ret = {};
-
-         if(db_response) ret = db_response;
-         return res.send(response.createDataResponse(ret, response.type.bookingSuccess));
+         if(db_response) return res.send(response.createDataResponse(routine.hideCredentials(db_response), response.type.bookingSuccess));
+         else return res.send(response.createResponse(response.type.noBookingFound));
       })
 
       
@@ -33,6 +34,8 @@ router.route("/")
             logger.error("User must login before booking.");
             return res.send(AUTH_FAIL);
          }
+
+         // @TODO: Check parameters to see if the user is a client
 
          // create an appointment and store in the database
          let params = req.body;

@@ -66,12 +66,6 @@ const logout = require("./routes/logout");
 app.use("/client", client);
 app.use("/doctor", doctor);
 app.use("/logout", logout);
-// app.use("/login", signin);
-// app.use('/register', register);
-// app.use('/register/verify', verify); // @TEMP: verify can be generic
-// app.use("/payment", payment);
-// app.use("/logout", client_logout);
-// app.use("/booking", client_booking)
 
 //
 // -------------------------------------- END OF ROUTES -------------------------------------
@@ -83,5 +77,11 @@ app.listen(port, async () => {
 
   // initialising database.
   await DB.initDB();
-  DB.getModel(options.client); // initialising passport here
+
+  // Initialising auth models
+  DB.getModel(options.doctor);
+  DB.getModel(options.client); 
+  DB.getModel(options.appointment);
+  
+  DB.getModel(options.clinic);
 });

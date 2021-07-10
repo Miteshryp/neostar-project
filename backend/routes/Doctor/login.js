@@ -13,7 +13,7 @@ router.route("/")
             return res.send(response.createResponse(response.type.signinFail));
          }
 
-         // Some attribute of doctor schema that identifies
+         //  @TODO: Some attribute of doctor schema that identifies
          // the logged in account as a doctor has to be 
          // checked here
       });
