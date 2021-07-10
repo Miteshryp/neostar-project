@@ -10,14 +10,6 @@ import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 
-const MapComponent = withScriptjs(
-  withGoogleMap((props) => (
-    <GoogleMap defaultZoom={8} defaultCenter={{ lat: 28.70406, lng: 77.102493 }}>
-      {props.isMarkerShown && <Marker position={{ lat: 28.70406, lng: 77.102493 }} />}
-    </GoogleMap>
-  ))
-);
-
 const payment_id = "rzp_test_Uqqdn4DKUadEKR";
 
 function loadScript(src) {
@@ -48,8 +40,43 @@ export default function BookingPage() {
     state: "",
     landmark: "",
     pincode: "",
+    clinicID: "",
   });
+  const MapComponent = withScriptjs(
+    withGoogleMap((props) => (
+      <GoogleMap defaultZoom={8} defaultCenter={{ lat: 28.70406, lng: 77.102493 }}>
+        {props.isMarkerShown ? (
+          <>
+            <Marker
+              onClick={(e) => {
+                // e.preventDefault();
+                setBookingData({ ...bookingData, clinicID: "delhi" });
+              }}
+              position={{ lat: 28.70406, lng: 77.102493 }}
+            />
+            <Marker
+              onClick={(e) => {
+                // e.preventDefault();
 
+                setBookingData({ ...bookingData, clinicID: "Nagpur" });
+              }}
+              position={{ lat: 20.70406, lng: 77.102493 }}
+            />
+            <Marker
+              onClick={(e) => {
+                // e.preventDefault();
+
+                setBookingData({ ...bookingData, clinicID: "Uttarpradesh" });
+              }}
+              position={{ lat: 28.70406, lng: 78 }}
+            />
+          </>
+        ) : (
+          <></>
+        )}
+      </GoogleMap>
+    ))
+  );
   console.log("BOOKDATA", bookingData);
   // let { state: user } = props.location;
 
