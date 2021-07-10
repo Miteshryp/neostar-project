@@ -21,7 +21,7 @@ router.route("/")
          // @TODO: Check parameters to see if the user is a client
 
          let Appointment = DB.getModel(options.appointment);
-         let db_response = await Appointment.findAll({client_id: req.user._id});
+         let db_response = await Appointment.findAll({clientID: req.user._id});
 
          if(db_response) return res.send(response.createDataResponse(routine.hideCredentials(db_response), response.type.bookingSuccess));
          else return res.send(response.createResponse(response.type.noBookingFound));
@@ -41,7 +41,7 @@ router.route("/")
          let params = req.body;
          let Appointment = DB.getModel(options.appointment);
 
-         params.client_id = req.user._id;
+         params.clientID = req.user._id;
          params.confirmed = false; // the doctor will confirm the appointment
          // rest of the parameters are passed by the frontend.         
 

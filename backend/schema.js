@@ -71,6 +71,12 @@ module.exports = {
             required: true
          },
 
+         street: String,
+         city: String,
+         state: String,
+         landmark: String, 
+         pincode: Number,
+
          problem: {
             type: String
          }

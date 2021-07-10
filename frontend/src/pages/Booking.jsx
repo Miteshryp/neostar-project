@@ -33,7 +33,8 @@ export default function BookingPage() {
 
   const [bookingData, setBookingData] = useState({
     street: "",
-    date: new Date(),
+    issueDate: new Date(),
+    appointmentDate: Date(),
     problem: "",
     location: "",
     city: "",
