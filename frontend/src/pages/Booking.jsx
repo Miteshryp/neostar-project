@@ -98,7 +98,7 @@ export default function BookingPage() {
     }
 
     let data = null;
-    await axios.post("/client/payment").then((res) => {
+    await axios.post("/client/payment").then(async (res) => {
       data = {};
       if (res.status === 200) {
         // response received.
@@ -106,10 +106,11 @@ export default function BookingPage() {
         data = res.data;
 
         // @Todo
-        // await axios.post("/client/booking", bookingData).then((res) => {
+        await axios.post("/client/booking", bookingData).then((res) => {
 
-        //   console.log(res);
-        // }
+          console.log(res);
+          redirect.push("/dashboard");
+        })
       }
       console.log(data);
 
@@ -122,9 +123,10 @@ export default function BookingPage() {
         description: "Thank you for nothing. Please give us some money",
         image: null,
         handler: function (response) {
-          alert(response.razorpay_payment_id);
-          alert(response.razorpay_order_id);
-          alert(response.razorpay_signature);
+          console.log("Payment Process Complete")
+          // alert(response.razorpay_payment_id);
+          // alert(response.razorpay_order_id);
+          // alert(response.razorpay_signature);
         },
         prefill: {
           name: user.name,
@@ -196,7 +198,7 @@ export default function BookingPage() {
                 <Col>
                   <DatePicker
                     selected={bookingData.appointmentDate}
-                    onChange={(date) => setBookingData({ ...bookingData, date })}
+                    onChange={(date) => setBookingData({ ...bookingData, appointmentDate: date })}
                     showTimeSelect
                     dateFormat="dd/MM/yyyy p"
                     type="date"

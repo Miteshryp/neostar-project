@@ -54,7 +54,8 @@ module.exports = {
          },
 
          clinicID: {
-            type: mongoose.Schema.Types.ObjectId
+            // type: mongoose.Schema.Types.ObjectId
+            type: String
          },
 
          issueDate: {
