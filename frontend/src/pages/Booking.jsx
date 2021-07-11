@@ -4,11 +4,46 @@ import axios from "../utils/backend_setting";
 import DatePicker from "react-datepicker";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import successPng from "../assets/images/success.png";
 
 // import AppointmentCard from "../components/AppointmentCard";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Form, Modal, Image } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
+
+const MapComponent = withScriptjs(
+  withGoogleMap((props) => (
+    <GoogleMap defaultZoom={8} defaultCenter={{ lat: 28.70406, lng: 77.102493 }}>
+      {props.isMarkerShown ? (
+        <>
+          <Marker
+            onClick={(e) => {
+              // e.preventDefault();
+              props.setState({ ...props.state, clinicID: "DELHI" });
+            }}
+            position={{ lat: 28.70406, lng: 77.102493 }}
+          />
+          <Marker
+            onClick={(e) => {
+              // e.preventDefault();
+              props.setState({ ...props.state, clinicID: "NAGPUR" });
+            }}
+            position={{ lat: 20.70406, lng: 77.102493 }}
+          />
+          <Marker
+            onClick={(e) => {
+              // e.preventDefault();
+              props.setState({ ...props.state, clinicID: "UTTAR PRADESH" });
+            }}
+            position={{ lat: 28.70406, lng: 78 }}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+    </GoogleMap>
+  ))
+);
 
 const payment_id = "rzp_test_Uqqdn4DKUadEKR";
 
@@ -31,6 +66,7 @@ export default function BookingPage() {
 
   const { user } = useContext(UserContext);
 
+  const [show, setShow] = useState(0);
   const [bookingData, setBookingData] = useState({
     street: "",
     issueDate: new Date(),
@@ -43,51 +79,12 @@ export default function BookingPage() {
     pincode: "",
     clinicID: "",
   });
-  const MapComponent = withScriptjs(
-    withGoogleMap((props) => (
-      <GoogleMap defaultZoom={8} defaultCenter={{ lat: 28.70406, lng: 77.102493 }}>
-        {props.isMarkerShown ? (
-          <>
-            <Marker
-              onClick={(e) => {
-                // e.preventDefault();
-                setBookingData({ ...bookingData, clinicID: "delhi" });
-              }}
-              position={{ lat: 28.70406, lng: 77.102493 }}
-            />
-            <Marker
-              onClick={(e) => {
-                // e.preventDefault();
-
-                setBookingData({ ...bookingData, clinicID: "Nagpur" });
-              }}
-              position={{ lat: 20.70406, lng: 77.102493 }}
-            />
-            <Marker
-              onClick={(e) => {
-                // e.preventDefault();
-
-                setBookingData({ ...bookingData, clinicID: "Uttarpradesh" });
-              }}
-              position={{ lat: 28.70406, lng: 78 }}
-            />
-          </>
-        ) : (
-          <></>
-        )}
-      </GoogleMap>
-    ))
-  );
-  console.log("BOOKDATA", bookingData);
   // let { state: user } = props.location;
 
   if (!user) {
     console.error("ERROR: Cannot book an appointment without a signin");
     redirect.push("/login");
   }
-
-  console.log("RECEIVED AT BOOKING: ");
-  console.log(user);
 
   const payFunction = async function () {
     const script_res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
@@ -102,17 +99,14 @@ export default function BookingPage() {
       data = {};
       if (res.status === 200) {
         // response received.
-        console.log(res);
         data = res.data;
 
         // @Todo
         await axios.post("/client/booking", bookingData).then((res) => {
-
-          console.log(res);
-          redirect.push("/dashboard");
-        })
+          // redirect.push("/dashboard");
+          setShow(!show);
+        });
       }
-      console.log(data);
 
       const options = {
         key: payment_id,
@@ -123,7 +117,7 @@ export default function BookingPage() {
         description: "Thank you for nothing. Please give us some money",
         image: null,
         handler: function (response) {
-          console.log("Payment Process Complete")
+          console.log("Payment Process Complete");
           // alert(response.razorpay_payment_id);
           // alert(response.razorpay_order_id);
           // alert(response.razorpay_signature);
@@ -135,8 +129,6 @@ export default function BookingPage() {
         },
       };
       const paymentObject = new window.Razorpay(options);
-      console.log("Payment Object: ");
-      console.log(paymentObject);
       paymentObject.open();
     });
   };
@@ -161,21 +153,23 @@ export default function BookingPage() {
               loadingElement={<div style={{ height: `100%` }} />}
               containerElement={<div style={{ height: `400px` }} />}
               mapElement={<div style={{ height: `100%` }} />}
+              state={bookingData}
+              setState={setBookingData}
             />
+            <h3 className="my-4">Chosen clinic</h3>
+
+            {bookingData.clinicID ? "Chosen Clinic is " + bookingData.clinicID : "You haven't selected any clinic"}
+
+            <hr />
 
             <Form.Group className="my-2" controlId="clinicSelect">
               <Form.Label>Street/Flat</Form.Label>
               <Form.Control placeholder="Street/Flat Address" onChange={(e) => setBookingData({ ...bookingData, street: e.target.value })}></Form.Control>
             </Form.Group>
-            <Form.Group className="my-2" controlId="clinicSelect">
-              <Form.Label>City and Clinic</Form.Label>
-              <Form.Control as="select" defaultValue={"Select"} onChange={(e) => setBookingData({ ...bookingData, location: e.target.value })}>
-                <option disabled>Select</option>
 
-                <option>Clinic - Delhi</option>
-                <option>Clinic - Mumbai</option>
-                <option>Clinic - Bangalore</option>
-              </Form.Control>
+            <Form.Group className="my-2" controlId="state">
+              <Form.Label>City</Form.Label>
+              <Form.Control placeholder="Enter City" onChange={(e) => setBookingData({ ...bookingData, city: e.target.value })}></Form.Control>
             </Form.Group>
 
             <Form.Group className="my-2" controlId="state">
@@ -223,6 +217,21 @@ export default function BookingPage() {
           </Form>
         </Col>
       </Row>
+
+      <Modal show={show} size="sm" aria-labelledby="contained-modal-title-vcenter" centered>
+        <Modal.Body className="success-modal">
+          <Image fluid src={successPng} />
+          <p className="text-muted text-center">Your Appointment booking was successful!</p>
+          <Button
+            variant={"success"}
+            onClick={() => {
+              redirect.push("/dashboard");
+            }}
+          >
+            Continue to Dashboard
+          </Button>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }

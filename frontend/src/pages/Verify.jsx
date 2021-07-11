@@ -33,28 +33,21 @@ export default function VerifyPage(props) {
       code: displayCode,
     };
 
-    console.log("Sending Response");
     await axios.post("/client/verify", verify_post).then((res) => {
-      console.log("Response Received");
       if (res.status === 200) {
         // The backend responded
-        console.log("STATUS", res);
-        console.log("code", res.data.status.code);
 
         if (res.data.status.code === 606 || res.data.status.code === 508) {
           //verification success
           makeErrorHidden();
-          console.log("Verification successful");
           setShow(1);
           // redirect.push("/login", register_data);
         } else {
           // backend sent an error.
           // Could not verify the otp
-          console.log("OTP verification failed");
           makeErrorVisible();
         }
       } else {
-        console.error("ERROR: Protocol Error");
         makeErrorVisible();
       }
     });

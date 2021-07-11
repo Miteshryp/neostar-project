@@ -16,8 +16,6 @@ function RegisterPage() {
   const changeInput = (event) => {
     let field = event.target.name;
     let value = event.target.value;
-    console.log("field", field);
-    console.log("value", value);
 
     setInput((prev) => {
       return { ...prev, [field]: value };
@@ -28,12 +26,10 @@ function RegisterPage() {
     event.preventDefault();
 
     await axios.post("/client/register", input).then((res) => {
-      console.log(res);
       if (res.data) {
         switch (res.data.status.code) {
           case 501: //sentCodeSuccess
             makeErrorHidden();
-            console.log("Redirecting ..... ");
             redirect.push("/verify", input);
             break;
 

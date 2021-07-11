@@ -32,15 +32,11 @@ function SignInPage() {
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("input", signIn);
     //@TODO: Check if the necessary fields are filled or not.
 
     // Check with the database if the account exists
     // let res = await axios.post(backend.url_path + backend.signin, signIn);
     await axios.post("/client/login", signIn).then((res) => {
-      console.log("RES - ");
-      console.log(res);
-
       if (res.status === 200) {
         //response received.
         if (res.data) {

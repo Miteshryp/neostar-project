@@ -11,14 +11,12 @@ export default function DoctorDashboad() {
 
   useEffect(() => {
     axios.get("/doctor/login").then((res) => {
-      console.log("HELOEIOFHRIB", res);
       setUser(res.data.data);
     });
   }, [setUser]);
 
   return (
     <Container className="py-3">
-      {console.log("HIIII", user)}
       {!user ? (
         <>
           <Row>

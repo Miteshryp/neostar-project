@@ -20,7 +20,6 @@ function App() {
   const { user, setUser } = useContext(UserContext);
   useEffect(() => {
     axios.get("/client/login").then((res) => {
-      console.log("HELOEIOFHRIB", res);
       setUser(res.data.data);
     });
   }, [setUser]);
@@ -34,7 +33,6 @@ function App() {
           <Route exact path="/about" component={AboutPage} />
           <Route exact path="/" component={HomePage} />
 
-          {console.log("USERNAME", user)}
           {user ? (
             <>
               <Route path="/dashboard" component={Dashboard} />

@@ -8,10 +8,8 @@ import { useHistory, Link } from "react-router-dom";
 function NavbarTop() {
   const redirect = useHistory();
   const { user, setUser } = useContext(UserContext);
-  console.log("Nav");
   const logoutUser = () => {
     axios.get("/logout").then((res) => {
-      console.log(res.data);
       setUser(res.data.data);
       redirect.push("/login");
     });
@@ -30,7 +28,6 @@ function NavbarTop() {
           <Link className="nav-link" to="/about">
             About
           </Link>
-          {console.log("USER HAI", user)}
           {user ? (
             <>
               <Link className="nav-link" to="/dashboard">

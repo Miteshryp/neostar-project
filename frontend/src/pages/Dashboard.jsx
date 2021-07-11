@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "../utils/backend_setting";
 
 import { useHistory } from "react-router-dom";
@@ -8,17 +8,19 @@ import { UserContext } from "../contexts/UserContext";
 export default function Dashboard() {
   let redirect = useHistory();
   const { user, setUser } = useContext(UserContext);
-
+  const [appointments, setAppointments] = useState(0);
   useEffect(() => {
     axios.get("/client/login").then((res) => {
-      console.log("HELOEIOFHRIB", res);
       setUser(res.data.data);
+    });
+
+    axios.get("/client/booking").then((res) => {
+      setAppointments(res.data.data);
     });
   }, [setUser]);
 
   return (
     <Container className="py-3">
-      {console.log("HIIII", user)}
       {user ? (
         <>
           <Row>
@@ -55,13 +57,12 @@ export default function Dashboard() {
             </Col>
           </Row>
 
-          <Row>
+          {/* <Row>
             <Col sm={6} className=" my-4 d-flex justify-content-center">
               <Card style={{ width: "18rem" }}>
                 <Card.Body>
                   <Card.Title>Special title treatment</Card.Title>
                   <Card.Text>With supporting text below as a natural lead-in to additional content.</Card.Text>
-                  {/* <Button variant="primary">Go somewhere</Button> */}
                 </Card.Body>
                 <Card.Header as="h5" className="text-center card-heading">
                   FIND US NEAR YOU
@@ -74,41 +75,49 @@ export default function Dashboard() {
                 <Card.Body>
                   <Card.Title>Special title treatment</Card.Title>
                   <Card.Text>With supporting text below as a natural lead-in to additional content.</Card.Text>
-                  {/* <Button variant="primary">Go somewhere</Button> */}
                 </Card.Body>
                 <Card.Header as="h5" className="text-center card-heading">
                   KNOW TREATMENT
                 </Card.Header>
               </Card>
             </Col>
-          </Row>
+          </Row> */}
+          <h3 className="text-center">Your Appointments</h3>
 
           <Row>
-            <Col sm={6} className=" my-4 d-flex justify-content-center">
-              <Card style={{ width: "18rem" }}>
-                <Card.Body>
-                  <Card.Title>Special title treatment</Card.Title>
-                  <Card.Text>With supporting text below as a natural lead-in to additional content.</Card.Text>
-                  {/* <Button variant="primary">Go somewhere</Button> */}
-                </Card.Body>
-                <Card.Header as="h5" className="text-center card-heading">
-                  DENTAL HEALTH RISK
-                </Card.Header>
-              </Card>
-            </Col>
+            {appointments ? (
+              appointments.map((item, idx) => {
+                return (
+                  <Col sm={6} key={idx} className=" my-4 d-flex justify-content-center">
+                    <Card style={{ width: "20rem" }}>
+                      <Card.Body>
+                        <Card.Title>{Date(Date.parse(item.issueDate) / 1000)}</Card.Title>
+                        <Card.Text>Confirmation : {item.confirmed ? "Confirmed" : "Waiting for confirmation"}</Card.Text>
+                        <h5>Problem</h5>
+                        <p>{item.problem}</p>
+                      </Card.Body>
+                      <Card.Header as="h5" className="text-center card-heading">
+                        DENTAL HEALTH RISK
+                      </Card.Header>
+                    </Card>
+                  </Col>
+                );
+              })
+            ) : (
+              <>No appointments</>
+            )}
 
-            <Col sm={6} className=" my-4 d-flex justify-content-center">
+            {/* <Col sm={6} className=" my-4 d-flex justify-content-center">
               <Card style={{ width: "18rem" }}>
                 <Card.Body>
                   <Card.Title>Special title treatment</Card.Title>
                   <Card.Text>With supporting text below as a natural lead-in to additional content.</Card.Text>
-                  {/* <Button variant="primary">Go somewhere</Button> */}
                 </Card.Body>
                 <Card.Header as="h5" className="text-center card-heading">
                   DENTAL HEALTH RISK
                 </Card.Header>
               </Card>
-            </Col>
+            </Col> */}
           </Row>
         </>
       ) : (
