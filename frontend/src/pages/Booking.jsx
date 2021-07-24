@@ -104,11 +104,7 @@ export default function BookingPage() {
         // response received.
         data = res.data;
 
-        // @Todo
-        await axios.post("/client/booking", bookingData).then((res) => {
-          // redirect.push("/dashboard");
-          setShow(!show);
-        });
+
       }
 
       const options = {
@@ -119,11 +115,18 @@ export default function BookingPage() {
         name: "Payment",
         description: "Thank you for nothing. Please give us some money",
         image: null,
-        handler: function (response) {
+        handler: async function (response) {
           console.log("Payment Process Complete");
           // alert(response.razorpay_payment_id);
           // alert(response.razorpay_order_id);
           // alert(response.razorpay_signature);
+
+
+                  // @Todo
+        await axios.post("/client/booking", bookingData).then((res) => {
+          // redirect.push("/dashboard");
+          setShow(!show);
+        });
         },
         prefill: {
           name: user.name,
