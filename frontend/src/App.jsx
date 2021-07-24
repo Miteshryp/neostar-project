@@ -15,6 +15,7 @@ import "./App.scss";
 import Dashboard from "./pages/Dashboard";
 import { UserContext } from "./contexts/UserContext";
 import DoctorDashboad from "./pages/DoctorDashboard";
+import DoctorHome from "./pages/DoctorHome";
 
 function App() {
   const { user, setUser } = useContext(UserContext);
@@ -30,23 +31,23 @@ function App() {
         <NavbarTop />
 
         <Switch>
-          <Route exact path="/about" component={AboutPage} />
           <Route exact path="/" component={HomePage} />
 
-          {user ? (
-            <>
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/booking" component={BookingPage} />
-            </>
+          {/* {user ? (
+            <> */}
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/booking" component={BookingPage} />
+          {/* </>
           ) : (
-            <>
-              <Route path="/doctor-dashboard" component={DoctorDashboad} />
+            <> */}
+          <Route path="/doctor" component={DoctorHome} />
+          <Route path="/doctor-dashboard" component={DoctorDashboad} />
 
-              <Route path="/login" component={SignInPage} />
-              <Route path="/register" component={RegisterPage} />
-              <Route path="/verify" component={VerifyPage} />
-            </>
-          )}
+          <Route path="/login" component={SignInPage} />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/verify" component={VerifyPage} />
+          {/* </>
+          )} */}
         </Switch>
       </Router>
     </div>

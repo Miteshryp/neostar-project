@@ -25,11 +25,12 @@ function NavbarTop() {
           <Link className="nav-link" to="/">
             Home
           </Link>
-          <Link className="nav-link" to="/about">
-            About
-          </Link>
           {user ? (
             <>
+              <Link className="nav-link" to="/profile">
+                Profile
+              </Link>
+
               <Link className="nav-link" to="/dashboard">
                 Dashboard
               </Link>

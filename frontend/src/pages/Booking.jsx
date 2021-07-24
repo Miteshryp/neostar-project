@@ -5,6 +5,9 @@ import DatePicker from "react-datepicker";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import successPng from "../assets/images/success.png";
+import BottomNav from "../components/BottomNav";
+import { TiTick } from "react-icons/ti";
+import { FaTimes } from "react-icons/fa";
 
 // import AppointmentCard from "../components/AppointmentCard";
 import { Container, Row, Col, Button, Form, Modal, Image } from "react-bootstrap";
@@ -134,13 +137,13 @@ export default function BookingPage() {
   };
 
   return (
-    <Container className="py-3">
+    <Container className="pt-3" style={{ paddingBottom: "80px" }}>
       <Row>
-        <Col className="py-2">
+        {/* <Col className="py-2">
           <h4>
             Welcome, {user.firstName} {user.lastName}
           </h4>
-        </Col>
+        </Col> */}
       </Row>
       <Row>
         <Col>
@@ -162,30 +165,30 @@ export default function BookingPage() {
 
             <hr />
 
-            <Form.Group className="my-2" controlId="clinicSelect">
-              <Form.Label>Street/Flat</Form.Label>
-              <Form.Control placeholder="Street/Flat Address" onChange={(e) => setBookingData({ ...bookingData, street: e.target.value })}></Form.Control>
-            </Form.Group>
+            {/* <Form.Group className="my-2" controlId="clinicSelect">
+                <Form.Label>Street/Flat</Form.Label>
+                <Form.Control placeholder="Street/Flat Address" onChange={(e) => setBookingData({ ...bookingData, street: e.target.value })}></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="my-2" controlId="state">
-              <Form.Label>City</Form.Label>
-              <Form.Control placeholder="Enter City" onChange={(e) => setBookingData({ ...bookingData, city: e.target.value })}></Form.Control>
-            </Form.Group>
+              <Form.Group className="my-2" controlId="state">
+                <Form.Label>City</Form.Label>
+                <Form.Control placeholder="Enter City" onChange={(e) => setBookingData({ ...bookingData, city: e.target.value })}></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="my-2" controlId="state">
-              <Form.Label>State</Form.Label>
-              <Form.Control placeholder="Enter State" onChange={(e) => setBookingData({ ...bookingData, state: e.target.value })}></Form.Control>
-            </Form.Group>
+              <Form.Group className="my-2" controlId="state">
+                <Form.Label>State</Form.Label>
+                <Form.Control placeholder="Enter State" onChange={(e) => setBookingData({ ...bookingData, state: e.target.value })}></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="my-2" controlId="landmark">
-              <Form.Label>Landmark</Form.Label>
-              <Form.Control placeholder="Enter Landmark" onChange={(e) => setBookingData({ ...bookingData, landmark: e.target.value })}></Form.Control>
-            </Form.Group>
+              <Form.Group className="my-2" controlId="landmark">
+                <Form.Label>Landmark</Form.Label>
+                <Form.Control placeholder="Enter Landmark" onChange={(e) => setBookingData({ ...bookingData, landmark: e.target.value })}></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="my-2" controlId="pincode">
-              <Form.Label>Pincode / Area Code</Form.Label>
-              <Form.Control placeholder="000000" onChange={(e) => setBookingData({ ...bookingData, pincode: e.target.value })}></Form.Control>
-            </Form.Group>
+              <Form.Group className="my-2" controlId="pincode">
+                <Form.Label>Pincode / Area Code</Form.Label>
+                <Form.Control placeholder="000000" onChange={(e) => setBookingData({ ...bookingData, pincode: e.target.value })}></Form.Control>
+              </Form.Group> */}
             <Form.Group className="my-2" controlId="clinicSelect">
               <Form.Label>Appointment Date and Time</Form.Label>
               <Row>
@@ -209,11 +212,27 @@ export default function BookingPage() {
             </Form.Group>
 
             <Form.Group className="my-2" controlId="problem" onChange={(e) => setBookingData({ ...bookingData, problem: e.target.value })}>
-              <Form.Label>Describe reason for appointment</Form.Label>
+              <Form.Label>Problem Description</Form.Label>
               <Form.Control as="textarea" rows={3} placeholder="Regular Checkup, problem ..." />
             </Form.Group>
 
-            <Button onClick={payFunction}>Submit</Button>
+            <Form.Group className="my-2" controlId="check">
+              <Form.Label>By booking an appointment through us you agree to give consent for treatment (if taken) to NeoStar</Form.Label>
+
+              <Form.Check type="checkbox" label="Check to agree" />
+            </Form.Group>
+
+            <BottomNav>
+              <button className="appointment btn" onClick={payFunction}>
+                <TiTick />
+                Submit
+              </button>
+              <div className="divider"></div>
+              <button className="shop btn" onClick={() => redirect.push("/dashboard")}>
+                <FaTimes />
+                Cancel
+              </button>
+            </BottomNav>
           </Form>
         </Col>
       </Row>
